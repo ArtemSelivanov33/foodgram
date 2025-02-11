@@ -59,7 +59,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": {{email}},\n    \"username\": {{username}},\n    \"first_name\": \"Вася\",\n    \"last_name\": \"Иванов\",\n    \"password\": {{password}}\n}",
+									"raw": "{\n    \"email\": {{email}},\n    \"username\": {{username}},\n    \"first_name\": \"Вася\",\n    \"last_name\": \"Пупкин\",\n    \"password\": {{password}}\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -241,7 +241,7 @@
 											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
 											"    pm.expect(",
 											"        pm.response.status,",
-											"        \"Убедитесь, что корректный запроc на получение токена возвращает ответ со статус-кодом 200\"",
+											"        \"Убедитесь, что запроc на получение токена, содержащий корректные данные, возвращает ответ со статус-кодом 200\"",
 											"    ).to.be.eql(\"OK\");",
 											"});",
 											"pm.test('Структура ответа соответствует ожидаемой', function () {",
@@ -307,7 +307,7 @@
 											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
 											"    pm.expect(",
 											"        pm.response.status,",
-											"        \"Убедитесь, что корректный запроc на получение токена возвращает ответ со статус-кодом 200\"",
+											"        \"Убедитесь, что запроc на получение токена, содержащий корректные данные, возвращает ответ со статус-кодом 200\"",
 											"    ).to.be.eql(\"OK\");",
 											"});",
 											"pm.test('Структура ответа соответствует ожидаемой', function () {",
@@ -551,7 +551,7 @@
 							"response": []
 						},
 						{
-							"name": "user_registration_without_password",
+							"name": "user_registration_without_password_name",
 							"event": [
 								{
 									"listen": "test",
@@ -1148,7 +1148,7 @@
 											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
 											"    pm.expect(",
 											"        pm.response.status,",
-											"        \"Убедитесь, что корректный запроc на получение токена возвращает ответ со статус-кодом 200\"",
+											"        \"Убедитесь, что запроc на получение токена, содержащий корректные данные, возвращает ответ со статус-кодом 200\"",
 											"    ).to.be.eql(\"OK\");",
 											"});",
 											"pm.test('Структура ответа соответствует ожидаемой', function () {",
@@ -1250,10 +1250,9 @@
 											"                    \"first_name\": {\"type\": \"string\"},",
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
-											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                    \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                },",
-											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"avatar\"],",
+											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        }",
@@ -1323,10 +1322,9 @@
 											"                    \"first_name\": {\"type\": \"string\"},",
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
-											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                    \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                },",
-											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"avatar\"],",
+											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        }",
@@ -1408,10 +1406,9 @@
 											"                    \"first_name\": {\"type\": \"string\"},",
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
-											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                    \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                },",
-											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"avatar\"],",
+											"                \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        }",
@@ -1503,10 +1500,9 @@
 											"        \"first_name\": {\"type\": \"string\"},",
 											"        \"last_name\": {\"type\": \"string\"},",
 											"        \"email\": {\"type\": \"string\"},",
-											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"        \"is_subscribed\": {\"type\": \"boolean\"}",
 											"    },",
-											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"    \"additionalProperties\": false",
 											"};",
 											"",
@@ -1560,10 +1556,9 @@
 											"        \"first_name\": {\"type\": \"string\"},",
 											"        \"last_name\": {\"type\": \"string\"},",
 											"        \"email\": {\"type\": \"string\"},",
-											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"        \"is_subscribed\": {\"type\": \"boolean\"}",
 											"    },",
-											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"    \"additionalProperties\": false",
 											"};",
 											"",
@@ -1630,10 +1625,9 @@
 											"        \"first_name\": {\"type\": \"string\"},",
 											"        \"last_name\": {\"type\": \"string\"},",
 											"        \"email\": {\"type\": \"string\"},",
-											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"        \"is_subscribed\": {\"type\": \"boolean\"}",
 											"    },",
-											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\"],",
 											"    \"additionalProperties\": false,",
 											"};",
 											"",
@@ -1682,161 +1676,6 @@
 										"disabled": true
 									}
 								],
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										""
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "set_avatars // User",
-					"item": [
-						{
-							"name": "set_avatar // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const responseSchema = {",
-											"    \"type\": \"object\",",
-											"    \"properties\": {",
-											"        \"avatar\": {\"type\": \"string\"}",
-											"    },",
-											"    \"required\": [\"avatar\"],",
-											"    \"additionalProperties\": false,",
-											"};",
-											"",
-											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос зарегистрированного пользователя должен вернуть ответ со статус-кодом 200\"",
-											"    ).to.be.eql(\"OK\");",
-											"});",
-											"pm.test('Структура ответа должна соответствовать ожидаемой', function () {",
-											"    pm.response.to.have.jsonSchema(responseSchema);",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"avatar\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/avatar/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										"avatar",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "check_avatar_is_set // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const responseData = pm.response.json();",
-											"const responseSchema = {",
-											"    \"type\": \"object\",",
-											"    \"properties\": {",
-											"        \"id\": {\"type\": \"number\"},",
-											"        \"username\": {\"type\": \"string\"},",
-											"        \"first_name\": {\"type\": \"string\"},",
-											"        \"last_name\": {\"type\": \"string\"},",
-											"        \"email\": {\"type\": \"string\"},",
-											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": \"string\"}",
-											"    },",
-											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
-											"    \"additionalProperties\": false,",
-											"};",
-											"",
-											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос зарегистрированного пользователя должен вернуть ответ со статус-кодом 200\"",
-											"    ).to.be.eql(\"OK\");",
-											"});",
-											"pm.test('Структура ответа должна соответствовать ожидаемой', function () {",
-											"    pm.response.to.have.jsonSchema(responseSchema);",
-											"});",
-											"pm.test(\"Поле `avatar` должно содержать ссылку на аватар\", function () {",
-											"    pm.expect(",
-											"        typeof responseData.avatar, ",
-											"        \"Убедитесь, что если аватар добавлен корректно, то  в ответе на запрос к данным пользователя в поле `avatar` содержится ссылка на аватар\"",
-											"    ).to.equal(\"string\");",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
 								"url": {
 									"raw": "{{baseUrl}}/api/users/me/",
 									"host": [
@@ -2274,292 +2113,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "delete_avatar // No Auth",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 401\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос незарегистрированного пользователя должен вернуть ответ со статус-кодом 401\"",
-											"    ).to.be.eql(\"Unauthorized\");",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/avatar/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										"avatar",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "set_avatar // No Auth",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 401\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос незарегистрированного пользователя должен вернуть ответ со статус-кодом 401\"",
-											"    ).to.be.eql(\"Unauthorized\");",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"avatar\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/avatar/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										"avatar",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "set_avatar_empty_body // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 400\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Если в запросе на добавление аватара отсутствует поле `avatar` - должен вернуться ответ со статусом 400\"",
-											"    ).to.be.eql(\"Bad Request\");",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/avatar/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										"avatar",
-										""
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "delete_avatar // User",
-					"item": [
-						{
-							"name": "delete_avatar // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 204\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос зарегистрированного пользователя должен вернуть ответ со статус-кодом 204\"",
-											"    ).to.be.eql(\"No Content\");",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/avatar/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										"avatar",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "check_avatar_is_deleted // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const responseData = pm.response.json();",
-											"const responseSchema = {",
-											"    \"type\": \"object\",",
-											"    \"properties\": {",
-											"        \"id\": {\"type\": \"number\"},",
-											"        \"username\": {\"type\": \"string\"},",
-											"        \"first_name\": {\"type\": \"string\"},",
-											"        \"last_name\": {\"type\": \"string\"},",
-											"        \"email\": {\"type\": \"string\"},",
-											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]}",
-											"    },",
-											"    \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
-											"    \"additionalProperties\": false,",
-											"};",
-											"",
-											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос зарегистрированного пользователя должен вернуть ответ со статус-кодом 200\"",
-											"    ).to.be.eql(\"OK\");",
-											"});",
-											"pm.test('Структура ответа должна соответствовать ожидаемой', function () {",
-											"    pm.response.to.have.jsonSchema(responseSchema);",
-											"});",
-											"pm.test(\"Поле `avatar` должно быть пустым\", function () {",
-											"    pm.expect(",
-											"        (responseData[\"avatar\"] === null || responseData[\"avatar\"] === \"\"), ",
-											"        \"Убедитесь, что после корректного запроса на удаление аватара в ответе на запрос к данным пользователя в поле `avatar` вернётся `null` или пустая строка\"",
-											"    ).to.be.true;",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/users/me/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"users",
-										"me",
-										""
-									]
-								}
-							},
-							"response": []
 						}
 					]
 				}
@@ -2609,9 +2162,10 @@
 											"        \"properties\": {",
 											"            \"id\": {\"type\": \"number\"},",
 											"            \"name\": {\"type\": \"string\"},",
+											"            \"color\": {\"type\": \"string\"},",
 											"            \"slug\": {\"type\": \"string\"},",
 											"        },",
-											"        \"required\": [\"id\", \"name\", \"slug\"],",
+											"        \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"        \"additionalProperties\": false",
 											"    }",
 											"};",
@@ -2665,10 +2219,10 @@
 											"        \"properties\": {",
 											"            \"id\": {\"type\": \"number\"},",
 											"            \"name\": {\"type\": \"string\"},",
-											"",
+											"            \"color\": {\"type\": \"string\"},",
 											"            \"slug\": {\"type\": \"string\"},",
 											"        },",
-											"        \"required\": [\"id\", \"name\", \"slug\"],",
+											"        \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"        \"additionalProperties\": false",
 											"    }",
 											"};",
@@ -2742,9 +2296,10 @@
 											"    \"properties\": {",
 											"        \"id\": {\"type\": \"number\"},",
 											"        \"name\": {\"type\": \"string\"},",
+											"        \"color\": {\"type\": \"string\"},",
 											"        \"slug\": {\"type\": \"string\"},",
 											"    },",
-											"    \"required\": [\"id\", \"name\", \"slug\"],",
+											"    \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"    \"additionalProperties\": false",
 											"};",
 											"",
@@ -2796,9 +2351,10 @@
 											"    \"properties\": {",
 											"        \"id\": {\"type\": \"number\"},",
 											"        \"name\": {\"type\": \"string\"},",
+											"        \"color\": {\"type\": \"string\"},",
 											"        \"slug\": {\"type\": \"string\"},",
 											"    },",
-											"    \"required\": [\"id\", \"name\", \"slug\"],",
+											"    \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"    \"additionalProperties\": false",
 											"};",
 											"",
@@ -2921,8 +2477,7 @@
 											"});",
 											""
 										],
-										"type": "text/javascript",
-										"packages": {}
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -2946,7 +2501,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Завтрак\",\n    \"slug\": \"breakfast\"\n}",
+									"raw": "{\n    \"name\": \"Завтрак\",\n    \"color\": \"#E26CFD\",\n    \"slug\": \"breakfast\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2982,8 +2537,7 @@
 											"});",
 											""
 										],
-										"type": "text/javascript",
-										"packages": {}
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -3007,7 +2561,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Завтрак\",\n    \"slug\": \"breakfast\"\n}",
+									"raw": "{\n    \"name\": \"Завтрак\",\n    \"color\": \"#E26CFD\",\n    \"slug\": \"breakfast\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3044,8 +2598,7 @@
 											"});",
 											""
 										],
-										"type": "text/javascript",
-										"packages": {}
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -3069,7 +2622,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"Завтрак\",\n    \"slug\": \"breakfast\"\n}",
+									"raw": "{\n    \"name\": \"Завтрак\",\n    \"color\": \"#E26C2D\",\n    \"slug\": \"breakfast\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3857,9 +3410,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -3871,10 +3425,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -3968,9 +3521,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -3982,10 +3536,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -4079,9 +3632,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -4093,10 +3647,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -4190,9 +3743,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -4204,10 +3758,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -4301,9 +3854,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -4315,10 +3869,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -4476,9 +4029,10 @@
 											"                            \"properties\": {",
 											"                                \"id\": {\"type\": \"number\"},",
 											"                                \"name\": {\"type\": \"string\"},",
+											"                                \"color\": {\"type\": \"string\"},",
 											"                                \"slug\": {\"type\": \"string\"},",
 											"                            },",
-											"                            \"required\": [\"id\", \"name\", \"slug\"],",
+											"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                            \"additionalProperties\": false",
 											"                        }",
 											"                    },",
@@ -4490,10 +4044,9 @@
 											"                            \"first_name\": {\"type\": \"string\"},",
 											"                            \"last_name\": {\"type\": \"string\"},",
 											"                            \"email\": {\"type\": \"string\"},",
-											"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                        },",
-											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                        \"additionalProperties\": false",
 											"                    },",
 											"                    \"ingredients\": {",
@@ -4594,9 +4147,10 @@
 											"                            \"properties\": {",
 											"                                \"id\": {\"type\": \"number\"},",
 											"                                \"name\": {\"type\": \"string\"},",
+											"                                \"color\": {\"type\": \"string\"},",
 											"                                \"slug\": {\"type\": \"string\"},",
 											"                            },",
-											"                            \"required\": [\"id\", \"name\", \"slug\"],",
+											"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                            \"additionalProperties\": false",
 											"                        }",
 											"                    },",
@@ -4608,10 +4162,9 @@
 											"                            \"first_name\": {\"type\": \"string\"},",
 											"                            \"last_name\": {\"type\": \"string\"},",
 											"                            \"email\": {\"type\": \"string\"},",
-											"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                        },",
-											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                        \"additionalProperties\": false",
 											"                    },",
 											"                    \"ingredients\": {",
@@ -4724,9 +4277,10 @@
 											"                            \"properties\": {",
 											"                                \"id\": {\"type\": \"number\"},",
 											"                                \"name\": {\"type\": \"string\"},",
+											"                                \"color\": {\"type\": \"string\"},",
 											"                                \"slug\": {\"type\": \"string\"},",
 											"                            },",
-											"                            \"required\": [\"id\", \"name\", \"slug\"],",
+											"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                            \"additionalProperties\": false",
 											"                        }",
 											"                    },",
@@ -4738,10 +4292,9 @@
 											"                            \"first_name\": {\"type\": \"string\"},",
 											"                            \"last_name\": {\"type\": \"string\"},",
 											"                            \"email\": {\"type\": \"string\"},",
-											"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                        },",
-											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                        \"additionalProperties\": false",
 											"                    },",
 											"                    \"ingredients\": {",
@@ -4871,9 +4424,10 @@
 											"                            \"properties\": {",
 											"                                \"id\": {\"type\": \"number\"},",
 											"                                \"name\": {\"type\": \"string\"},",
+											"                                \"color\": {\"type\": \"string\"},",
 											"                                \"slug\": {\"type\": \"string\"},",
 											"                            },",
-											"                            \"required\": [\"id\", \"name\", \"slug\"],",
+											"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                            \"additionalProperties\": false",
 											"                        }",
 											"                    },",
@@ -4885,10 +4439,9 @@
 											"                            \"first_name\": {\"type\": \"string\"},",
 											"                            \"last_name\": {\"type\": \"string\"},",
 											"                            \"email\": {\"type\": \"string\"},",
-											"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                        },",
-											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                        \"additionalProperties\": false",
 											"                    },",
 											"                    \"ingredients\": {",
@@ -5025,9 +4578,10 @@
 											"                            \"properties\": {",
 											"                                \"id\": {\"type\": \"number\"},",
 											"                                \"name\": {\"type\": \"string\"},",
+											"                                \"color\": {\"type\": \"string\"},",
 											"                                \"slug\": {\"type\": \"string\"},",
 											"                            },",
-											"                            \"required\": [\"id\", \"name\", \"slug\"],",
+											"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                            \"additionalProperties\": false",
 											"                        }",
 											"                    },",
@@ -5039,10 +4593,9 @@
 											"                            \"first_name\": {\"type\": \"string\"},",
 											"                            \"last_name\": {\"type\": \"string\"},",
 											"                            \"email\": {\"type\": \"string\"},",
-											"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 											"                        },",
-											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"                        \"additionalProperties\": false",
 											"                    },",
 											"                    \"ingredients\": {",
@@ -5192,9 +4745,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -5206,10 +4760,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -5305,9 +4858,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -5319,10 +4873,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -5403,129 +4956,6 @@
 					]
 				},
 				{
-					"name": "get_recipe_short_link",
-					"item": [
-						{
-							"name": "get_recipe_short_link // User",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const responseSchema = {",
-											"    \"type\": \"object\",",
-											"    \"properties\": {",
-											"        \"short-link\": {\"type\": \"string\"}",
-											"    },",
-											"    \"required\": [\"short-link\"],",
-											"    \"additionalProperties\": false,",
-											"};",
-											"",
-											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос зарегистрированного пользователя должен вернуть ответ со статус-кодом 200\"",
-											"    ).to.be.eql(\"OK\");",
-											"});",
-											"pm.test('Структура ответа должна соответствовать ожидаемой', function () {",
-											"    pm.response.to.have.jsonSchema(responseSchema);",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "apikey",
-									"apikey": [
-										{
-											"key": "value",
-											"value": "Token {{userToken}}",
-											"type": "string"
-										},
-										{
-											"key": "key",
-											"value": "Authorization",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/recipes/{{firstRecipeId}}/get-link/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"recipes",
-										"{{firstRecipeId}}",
-										"get-link",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "get_recipe_short_link // No Auth",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"const responseSchema = {",
-											"    \"type\": \"object\",",
-											"    \"properties\": {",
-											"        \"short-link\": {\"type\": \"string\"}",
-											"    },",
-											"    \"required\": [\"short-link\"],",
-											"    \"additionalProperties\": false,",
-											"};",
-											"",
-											"pm.test(\"Статус-код ответа должен быть 200\", function () {",
-											"    pm.expect(",
-											"        pm.response.status,",
-											"        \"Запрос незарегистрированного пользователя должен вернуть ответ со статус-кодом 200\"",
-											"    ).to.be.eql(\"OK\");",
-											"});",
-											"pm.test('Структура ответа должна соответствовать ожидаемой', function () {",
-											"    pm.response.to.have.jsonSchema(responseSchema);",
-											"});",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/api/recipes/{{firstRecipeId}}/get-link/",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"api",
-										"recipes",
-										"{{firstRecipeId}}",
-										"get-link",
-										""
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "update_recipes",
 					"item": [
 						{
@@ -5546,9 +4976,10 @@
 											"                \"properties\": {",
 											"                    \"id\": {\"type\": \"number\"},",
 											"                    \"name\": {\"type\": \"string\"},",
+											"                    \"color\": {\"type\": \"string\"},",
 											"                    \"slug\": {\"type\": \"string\"},",
 											"                },",
-											"                \"required\": [\"id\", \"name\", \"slug\"],",
+											"                \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 											"                \"additionalProperties\": false",
 											"            }",
 											"        },",
@@ -5560,10 +4991,9 @@
 											"                \"first_name\": {\"type\": \"string\"},",
 											"                \"last_name\": {\"type\": \"string\"},",
 											"                \"email\": {\"type\": \"string\"},",
-											"                \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                \"avatar\": {\"type\": [\"string\", \"null\"]}",
+											"                \"is_subscribed\": {\"type\": \"boolean\"}",
 											"            },",
-											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+											"            \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 											"            \"additionalProperties\": false",
 											"        },",
 											"        \"ingredients\": {",
@@ -6435,7 +5865,7 @@
 													"pm.test(\"Статус-код ответа должен быть 400\", function () {",
 													"    pm.expect(",
 													"        pm.response.status,",
-													"        \"Если длина поля `name` превышает 256 символов - должен вернуться ответ со статусом 400\"",
+													"        \"Если длина поля `name` превышает 200 символов - должен вернуться ответ со статусом 400\"",
 													"    ).to.be.eql(\"Bad Request\");",
 													"});"
 												],
@@ -7610,7 +7040,7 @@
 													"pm.test(\"Статус-код ответа должен быть 400\", function () {",
 													"    pm.expect(",
 													"        pm.response.status,",
-													"        \"Если длина поля `name` превышает 256 символов - должен вернуться ответ со статусом 400\"",
+													"        \"Если длина поля `name` превышает 200 символов - должен вернуться ответ со статусом 400\"",
 													"    ).to.be.eql(\"Bad Request\");",
 													"});"
 												],
@@ -7951,7 +7381,6 @@
 											"        \"last_name\": {\"type\": \"string\"},",
 											"        \"email\": {\"type\": \"string\"},",
 											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]},",
 											"        \"recipes_count\": {\"type\": \"number\"},",
 											"        \"recipes\": {",
 											"            \"type\": \"array\",",
@@ -7970,7 +7399,7 @@
 											"    },",
 											"    \"required\": [",
 											"        \"id\", \"username\", \"first_name\", \"last_name\", \"email\",",
-											"        \"is_subscribed\", \"recipes\", \"recipes_count\", \"avatar\"",
+											"        \"is_subscribed\", \"recipes\", \"recipes_count\"",
 											"    ],",
 											"    \"additionalProperties\": false",
 											"};",
@@ -8039,7 +7468,6 @@
 											"        \"last_name\": {\"type\": \"string\"},",
 											"        \"email\": {\"type\": \"string\"},",
 											"        \"is_subscribed\": {\"type\": \"boolean\"},",
-											"        \"avatar\": {\"type\": [\"string\", \"null\"]},",
 											"        \"recipes_count\": {\"type\": \"number\"},",
 											"        \"recipes\": {",
 											"            \"type\": \"array\",",
@@ -8058,7 +7486,7 @@
 											"    },",
 											"    \"required\": [",
 											"        \"id\", \"username\", \"first_name\", \"last_name\", \"email\",",
-											"        \"is_subscribed\", \"recipes\", \"recipes_count\", \"avatar\"",
+											"        \"is_subscribed\", \"recipes\", \"recipes_count\"",
 											"    ],",
 											"    \"additionalProperties\": false",
 											"};",
@@ -8157,7 +7585,6 @@
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
 											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]},",
 											"                    \"recipes_count\": {\"type\": \"number\"},",
 											"                    \"recipes\": {",
 											"                        \"type\": \"array\",",
@@ -8176,7 +7603,7 @@
 											"                },",
 											"                \"required\": [",
 											"                    \"id\", \"username\", \"first_name\", \"last_name\", \"email\",",
-											"                    \"is_subscribed\", \"recipes\", \"recipes_count\", \"avatar\"",
+											"                    \"is_subscribed\", \"recipes\", \"recipes_count\"",
 											"                ],",
 											"                \"additionalProperties\": false",
 											"            }",
@@ -8261,7 +7688,6 @@
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
 											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]},",
 											"                    \"recipes_count\": {\"type\": \"number\"},",
 											"                    \"recipes\": {",
 											"                        \"type\": \"array\",",
@@ -8280,7 +7706,7 @@
 											"                },",
 											"                \"required\": [",
 											"                    \"id\", \"username\", \"first_name\", \"last_name\", \"email\",",
-											"                    \"is_subscribed\", \"recipes\", \"recipes_count\", \"avatar\"",
+											"                    \"is_subscribed\", \"recipes\", \"recipes_count\"",
 											"                ],",
 											"                \"additionalProperties\": false",
 											"            }",
@@ -8382,7 +7808,6 @@
 											"                    \"last_name\": {\"type\": \"string\"},",
 											"                    \"email\": {\"type\": \"string\"},",
 											"                    \"is_subscribed\": {\"type\": \"boolean\"},",
-											"                    \"avatar\": {\"type\": [\"string\", \"null\"]},",
 											"                    \"recipes_count\": {\"type\": \"number\"},",
 											"                    \"recipes\": {",
 											"                        \"type\": \"array\",",
@@ -8401,7 +7826,7 @@
 											"                },",
 											"                \"required\": [",
 											"                    \"id\", \"username\", \"first_name\", \"last_name\", \"email\",",
-											"                    \"is_subscribed\", \"recipes\", \"recipes_count\", \"avatar\"",
+											"                    \"is_subscribed\", \"recipes\", \"recipes_count\"",
 											"                ],",
 											"                \"additionalProperties\": false",
 											"            }",
@@ -8955,15 +8380,14 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 404\", function () {",
+											"pm.test(\"Статус-код ответа должен быть 400\", function () {",
 											"    pm.expect(",
 											"        pm.response.status,",
-											"        \"При попытке добавить несуществующий рецепт в корзину должен вернуться ответ со статусом 404\"",
-											"    ).to.be.eql(\"Not Found\");",
+											"        \"При попытке добавить несуществующий рецепт в корзину должен вернуться ответ со статусом 400\"",
+											"    ).to.be.eql(\"Bad Request\");",
 											"});"
 										],
-										"type": "text/javascript",
-										"packages": {}
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -9217,15 +8641,14 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Статус-код ответа должен быть 404\", function () {",
+											"pm.test(\"Статус-код ответа должен быть 400\", function () {",
 											"    pm.expect(",
 											"        pm.response.status,",
-											"        \"При попытке добавить несуществующий рецепт в избранное должен вернуться ответ со статусом 404\"",
-											"    ).to.be.eql(\"Not Found\");",
+											"        \"При попытке добавить несуществующий рецепт в избранное должен вернуться ответ со статусом 400\"",
+											"    ).to.be.eql(\"Bad Request\");",
 											"});"
 										],
-										"type": "text/javascript",
-										"packages": {}
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -9336,7 +8759,7 @@
 									"                                \"color\": {\"type\": \"string\"},",
 									"                                \"slug\": {\"type\": \"string\"},",
 									"                            },",
-									"                            \"required\": [\"id\", \"name\", \"slug\"],",
+									"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 									"                            \"additionalProperties\": false",
 									"                        }",
 									"                    },",
@@ -9348,10 +8771,9 @@
 									"                            \"first_name\": {\"type\": \"string\"},",
 									"                            \"last_name\": {\"type\": \"string\"},",
 									"                            \"email\": {\"type\": \"string\"},",
-									"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-									"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+									"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 									"                        },",
-									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 									"                        \"additionalProperties\": false",
 									"                    },",
 									"                    \"ingredients\": {",
@@ -9488,9 +8910,10 @@
 									"                            \"properties\": {",
 									"                                \"id\": {\"type\": \"number\"},",
 									"                                \"name\": {\"type\": \"string\"},",
+									"                                \"color\": {\"type\": \"string\"},",
 									"                                \"slug\": {\"type\": \"string\"},",
 									"                            },",
-									"                            \"required\": [\"id\", \"name\", \"slug\"],",
+									"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 									"                            \"additionalProperties\": false",
 									"                        }",
 									"                    },",
@@ -9502,10 +8925,9 @@
 									"                            \"first_name\": {\"type\": \"string\"},",
 									"                            \"last_name\": {\"type\": \"string\"},",
 									"                            \"email\": {\"type\": \"string\"},",
-									"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-									"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+									"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 									"                        },",
-									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 									"                        \"additionalProperties\": false",
 									"                    },",
 									"                    \"ingredients\": {",
@@ -9613,9 +9035,10 @@
 									"                            \"properties\": {",
 									"                                \"id\": {\"type\": \"number\"},",
 									"                                \"name\": {\"type\": \"string\"},",
+									"                                \"color\": {\"type\": \"string\"},",
 									"                                \"slug\": {\"type\": \"string\"},",
 									"                            },",
-									"                            \"required\": [\"id\", \"name\", \"slug\"],",
+									"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 									"                            \"additionalProperties\": false",
 									"                        }",
 									"                    },",
@@ -9627,10 +9050,9 @@
 									"                            \"first_name\": {\"type\": \"string\"},",
 									"                            \"last_name\": {\"type\": \"string\"},",
 									"                            \"email\": {\"type\": \"string\"},",
-									"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-									"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+									"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 									"                        },",
-									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 									"                        \"additionalProperties\": false",
 									"                    },",
 									"                    \"ingredients\": {",
@@ -9766,9 +9188,10 @@
 									"                            \"properties\": {",
 									"                                \"id\": {\"type\": \"number\"},",
 									"                                \"name\": {\"type\": \"string\"},",
+									"                                \"color\": {\"type\": \"string\"},",
 									"                                \"slug\": {\"type\": \"string\"},",
 									"                            },",
-									"                            \"required\": [\"id\", \"name\", \"slug\"],",
+									"                            \"required\": [\"id\", \"name\", \"color\", \"slug\"],",
 									"                            \"additionalProperties\": false",
 									"                        }",
 									"                    },",
@@ -9780,10 +9203,9 @@
 									"                            \"first_name\": {\"type\": \"string\"},",
 									"                            \"last_name\": {\"type\": \"string\"},",
 									"                            \"email\": {\"type\": \"string\"},",
-									"                            \"is_subscribed\": {\"type\": \"boolean\"},",
-									"                            \"avatar\": {\"type\": [\"string\", \"null\"]}",
+									"                            \"is_subscribed\": {\"type\": \"boolean\"}",
 									"                        },",
-									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\", \"is_subscribed\", \"avatar\"],",
+									"                        \"required\": [\"id\", \"username\", \"first_name\", \"last_name\", \"email\"],",
 									"                        \"additionalProperties\": false",
 									"                    },",
 									"                    \"ingredients\": {",
@@ -10352,8 +9774,7 @@
 													"    ).to.be.eql(\"Unauthorized\");",
 													"});"
 												],
-												"type": "text/javascript",
-												"packages": {}
+												"type": "text/javascript"
 											}
 										}
 									],
@@ -10364,14 +9785,14 @@
 										"method": "DELETE",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/",
+											"raw": "{{baseUrl}}/api/recipes/{{recipeId}}/favorite/",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
 												"api",
 												"recipes",
-												"{{firstRecipeId}}",
+												"{{recipeId}}",
 												"favorite",
 												""
 											]
@@ -11048,7 +10469,7 @@
 		},
 		{
 			"key": "username",
-			"value": "\"vasya.ivanov\"",
+			"value": "\"vasya.pupkin\"",
 			"type": "string"
 		},
 		{
@@ -11058,7 +10479,7 @@
 		},
 		{
 			"key": "email",
-			"value": "\"vivanov@yandex.ru\"",
+			"value": "\"vpupkin@yandex.ru\"",
 			"type": "string"
 		},
 		{
@@ -11098,7 +10519,7 @@
 		},
 		{
 			"key": "tooLongName",
-			"value": "Старинный рецепт, передаваемый из поколения в поколение через сказки и народные предания. Немногие могут правильно его приготовить. Большая сложность обусловлена названием, которое длиннее 256 символов, что существенно усложняет его запоминание. Дерзайте!!!",
+			"value": "Старинный рецепт, передаваемый из поколения в поколение через сказки и народные предания. Немногие могут правильно его приготовить. Большая сложность обусловлена названием, которое длиннее 200 символов",
 			"type": "string"
 		},
 		{
