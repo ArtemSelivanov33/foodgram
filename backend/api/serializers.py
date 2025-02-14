@@ -5,17 +5,16 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
 from recipe.models import (
-    Favorite, Ingredient, Recipe,
-    RecipeIngredients, ShoppingCart, Tag
+    Favorite, Ingredient, Recipe, RecipeIngredients, ShoppingCart, Tag
 )
-from user.models import Follow, User
+from user.models import CustomUser, Follow
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор создания пользователя."""
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = (
             'id',
             'first_name',
@@ -32,7 +31,7 @@ class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = (
             'email',
             'id',
@@ -360,7 +359,7 @@ class SubscriptionListSerializer(CustomUserSerializer):
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = CustomUserSerializer.Meta.fields + (
             'recipes', 'recipes_count'
         )
@@ -378,3 +377,23 @@ class SubscriptionListSerializer(CustomUserSerializer):
     def get_recipes_count(self, obj):
         """Получение количества рецептов."""
         return Recipe.objects.filter(author_id=obj.id).count()
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    """Сериализатор для избранного.Проверяет поступающие данные."""
+
+    class Meta:
+        model = Favorite
+        fields = ('user', 'recipe')
+
+    def validate(self, attrs):
+        user = attrs.get('user')
+        recipe = attrs.get('recipe')
+        if not user:
+            raise serializers.ValidationError("Пользователь не указан.")
+        if not Recipe.objects.filter(id=recipe.id).exists():
+            raise serializers.ValidationError("Рецепт не найден.")
+        return attrs
+
+    def create(self, validated_data):
+        return Favorite.objects.create(**validated_data)

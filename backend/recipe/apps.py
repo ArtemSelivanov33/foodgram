@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 
-class UserConfig(AppConfig):
+class RecipeConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'user'
+    name = 'recipe'
+    verbose_name = 'Рецепт'

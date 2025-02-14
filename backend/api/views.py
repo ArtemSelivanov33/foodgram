@@ -3,31 +3,29 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser import views
+from foodgram.backend.api.filters import (IngredientFilter, RecipeFilter,
+                                          TagFilter)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from api.pagination import LimitedPagination
 from api.permissions import IsAuthorOrReadOnly, ThisUserOrAdmin
-from api.serializers import (
-    CustomUserSerializer, IngredientDetailSerializer, RecipeCreateSerializer,
-    RecipeListSerializer, RecipeSerializer, RecipeSerializerShort,
-    SubscriptionListSerializer, TagSerializer
-)
-from recipe.filters import IngredientFilter, RecipeFilter, TagFilter
-from recipe.models import (
-    Favorite, Ingredient, Recipe,
-    RecipeIngredients, ShoppingCart, Tag
-)
-from user.models import Follow, User
-from utils import views_utils, text_constants
+from api.serializers import (CustomUserSerializer, IngredientDetailSerializer,
+                             RecipeCreateSerializer, RecipeListSerializer,
+                             RecipeSerializer, RecipeSerializerShort,
+                             SubscriptionListSerializer, TagSerializer)
+from recipe.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
+                           ShoppingCart, Tag)
+from user.models import CustomUser, Follow
+from utils.text_constants import ErrorMessage, views_utils
 
 
 class UserListViewSet(views.UserViewSet):
     """Представление пользователей."""
 
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         ThisUserOrAdmin
@@ -50,8 +48,7 @@ class UserListViewSet(views.UserViewSet):
     )
     def subscriptions(self, request):
         """Получение подписок и сериализация."""
-
-        authors = User.objects.filter(following__user=request.user)
+        authors = CustomUser.objects.filter(following__user=request.user)
         paginator = PageNumberPagination()
         paginator.page_size = 6
         result_page = paginator.paginate_queryset(authors, request)
@@ -70,16 +67,15 @@ class UserListViewSet(views.UserViewSet):
     )
     def subscribe(self, request, id):
         """Подписка на автора, отписка."""
-
         user = request.user
-        author = get_object_or_404(User, id=id)
+        author = get_object_or_404(CustomUser, id=id)
         if request.method == 'POST':
             if user != author and not Follow.objects.filter(
                 user=user,
                 author=author
             ).exists():
                 Follow.objects.create(user=request.user, author=author)
-                follows = User.objects.filter(id=id).first()
+                follows = CustomUser.objects.filter(id=id).first()
                 serializer = SubscriptionListSerializer(
                     follows,
                     context={'request': request}
@@ -89,7 +85,7 @@ class UserListViewSet(views.UserViewSet):
                     status=status.HTTP_201_CREATED
                 )
             return Response(
-                {'errors': text_constants.SUBSCRIPTION_ERROR},
+                {'errors': ErrorMessage.SUBSCRIPTION_ERROR},
                 status=status.HTTP_400_BAD_REQUEST
             )
         if user != author and Follow.objects.filter(
@@ -99,7 +95,7 @@ class UserListViewSet(views.UserViewSet):
             Follow.objects.filter(user=user, author=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-            {'errors': text_constants.NO_ENTRY},
+            {'errors': ErrorMessage.NO_ENTRY},
             status=status.HTTP_400_BAD_REQUEST
         )
 
@@ -161,7 +157,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Выбор сериализатора рецептов."""
-
         if self.action in ('list', 'retrive'):
             return RecipeListSerializer
         if self.action in ('create', 'update', 'partial_update'):
@@ -175,7 +170,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk):
         """Добавление рецепта в избранное, удаление из избранного."""
-
         return views_utils.favorite(
             self,
             request,
@@ -192,7 +186,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         """Добавление рецепта в список покупок, удаление из списка покупок."""
-
         return views_utils.favorite(
             self,
             request,
@@ -209,7 +202,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         """Скачивание txt-файла списка покупок."""
-
         shopping_cart = ShoppingCart.objects.filter(
             user=request.user
         ).values_list('recipe_id', flat=True)

@@ -203,37 +203,6 @@ git push
     sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
     ```
 
-7. На сервере в редакторе nano откройте конфиг Nginx:
-
-    ```sh
-    sudo nano /etc/nginx/sites-enabled/default
-    ```
-
-8. Измените настройки location в секции server:
-
-    ```sh
-    location / {
-        proxy_set_header Host $http_host;
-        proxy_pass http://127.0.0.1:8000;
-    }
-    ```
-
-9. Проверьте работоспособность конфига Nginx:
-
-    ```sh
-    sudo nginx -t
-    ```
-    Если ответ в терминале такой, значит, ошибок нет:
-    ```sh
-    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-    nginx: configuration file /etc/nginx/nginx.conf test is successful
-    ```
-
-10. Перезапускаем Nginx
-    ```sh
-    sudo service nginx reload
-    ```
-
 
 # Команды которые могут пригодиться в процессе
 
@@ -256,11 +225,7 @@ git push
     \help  \l  \dt  # команда psql
     ```
     ```sh
-    sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_ingredients  # команда на сервере для загрузки ингредиентов в базу данных
-                                                                                                           # выполняется в отдельном окне терминала.
-    ```
-    ```sh
-    sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_tags  # команда на сервере для загрузки тегов в базу
+    sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_data  # команда на сервере для загрузки ингредиентов и тегов в базу данных,
                                                                                                     # выполняется в отдельном окне терминала.
     ```
     ```sh

@@ -1,3 +1,4 @@
+хост: foodsite.ddns.net
 Юзернейм: USER1
 почта: yan@yak.ru
 пароль: 12345qweasd

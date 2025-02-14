@@ -1,10 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.models import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
-from utils.constants import (
-    MODELS_FIELDS_MAX_LENGTH, TAG_COLOR_MAX_LENGTH,
-    TAG_NAME_MAX_LENGTH
+from foodgram.backend.foodgram_backend.constants import (
+    MODELS_FIELDS_MAX_LENGTH, TAG_COLOR_MAX_LENGTH, TAG_NAME_MAX_LENGTH
 )
 
 
@@ -90,6 +90,8 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        through='RecipeIngredients',
+        through_fields=('recipe', 'ingredient'),
         related_name='recipes',
         verbose_name='Ингредиенты',
     )
@@ -148,34 +150,41 @@ class RecipeIngredients(models.Model):
         return self.recipe.name
 
 
-class Favorite(models.Model):
+User = get_user_model()
+
+
+class BaseUserRecipeRelation(models.Model):
+    """Абстрактная модель для связи пользователя и рецепта."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='%(class)s'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='%(class)s'
+    )
+
+    class Meta:
+        abstract = True
+
+
+class Favorite(BaseUserRecipeRelation):
     """Модель избранных рецептов."""
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='favorites',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='favorites'
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Избранный рецепт'
+        verbose_name_plural = 'Избранные рецепты'
 
 
-class ShoppingCart(models.Model):
+class ShoppingCart(BaseUserRecipeRelation):
     """Модель корзины."""
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='shopping_cart',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='shopping_cart'
-    )
 
     class Meta:
         verbose_name = 'Корзина'

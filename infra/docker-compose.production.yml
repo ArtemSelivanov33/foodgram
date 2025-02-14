@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  pg_data_fg:
+  static:
+  media:
+  docs:
+
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data_fg:/var/lib/postgresql/data
+  backend:
+    image: neo10/foodgram_backend
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - static:/backend_static
+      - media:/app/media/
+      - docs:/app/docs/
+  frontend:
+    image: neo10/foodgram_frontend
+    env_file: .env
+    depends_on:
+      - backend
+    volumes:
+      - static:/frontend_static
+  gateway:
+    image: neo10/foodgram_gateway
+    env_file: .env
+    depends_on:
+      - frontend
+    ports:
+      - 8000:80
+    volumes:
+      - static:/static
+      - media:/media
+      - docs:/usr/share/nginx/html/api/docs/

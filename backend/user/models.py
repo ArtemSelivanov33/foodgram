@@ -1,11 +1,13 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
-from utils.constants import USER_FIELDS_MAX_LENGTH, EMAIL_FIELDS_MAX_LENGTH
+
+from foodgram.backend.foodgram_backend.constants import EMAIL_FIELDS_MAX_LENGTH, USER_FIELDS_MAX_LENGTH
 
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     """Кастомная модель пользователя."""
 
     email = models.EmailField(
@@ -18,7 +20,10 @@ class User(AbstractUser):
         unique=True,
         verbose_name='Юзернейм',
         validators=[
-            RegexValidator(regex=r'^[\w.@+-]+\Z', )
+            RegexValidator(
+                regex=r'^[w.@+-Z',
+                message='Недопустимые символы в юзернейме.'
+            )
         ]
     )
     first_name = models.CharField(
@@ -33,14 +38,29 @@ class User(AbstractUser):
         max_length=USER_FIELDS_MAX_LENGTH,
     )
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def clean(self):
+        super().clean()
+        if self.username.lower() == 'me':
+            raise ValidationError('Недопустимое имя пользователя: "me".')
+
+
+User = get_user_model()
+
 
 class Follow(models.Model):
     """Модель подписок."""
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
-        related_name='follower'
+        related_name='followers'
     )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -51,10 +71,14 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
                 name='unique_user_author'
             )
         ]
+
+    def clean(self):
+        """Метод для проверки подписки на самого себя."""
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписаться на самого себя.')
