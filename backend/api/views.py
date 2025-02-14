@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser import views
-from foodgram.backend.api.filters import (IngredientFilter, RecipeFilter,
-                                          TagFilter)
+from foodgram.backend.api.filters import (
+    IngredientFilter, RecipeFilter, TagFilter
+)
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -12,12 +13,19 @@ from rest_framework.response import Response
 
 from api.pagination import LimitedPagination
 from api.permissions import IsAuthorOrReadOnly, ThisUserOrAdmin
-from api.serializers import (CustomUserSerializer, IngredientDetailSerializer,
-                             RecipeCreateSerializer, RecipeListSerializer,
-                             RecipeSerializer, RecipeSerializerShort,
-                             SubscriptionListSerializer, TagSerializer)
-from recipe.models import (Favorite, Ingredient, Recipe, RecipeIngredients,
-                           ShoppingCart, Tag)
+from api.serializers import (
+    CustomUserSerializer,
+    IngredientDetailSerializer,
+    RecipeCreateSerializer,
+    RecipeListSerializer,
+    RecipeSerializer,
+    RecipeSerializerShort,
+    SubscriptionListSerializer,
+    TagSerializer
+)
+from recipe.models import (
+    Favorite, Ingredient, Recipe, RecipeIngredients, ShoppingCart, Tag
+)
 from user.models import CustomUser, Follow
 from utils.text_constants import ErrorMessage, views_utils
 

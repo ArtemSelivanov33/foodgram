@@ -4,7 +4,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 
-from foodgram.backend.foodgram_backend.constants import EMAIL_FIELDS_MAX_LENGTH, USER_FIELDS_MAX_LENGTH
+from foodgram.backend.foodgram_backend.constants import (
+    EMAIL_FIELDS_MAX_LENGTH, USER_FIELDS_MAX_LENGTH
+)
 
 
 class CustomUser(AbstractUser):
