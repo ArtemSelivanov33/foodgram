@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
+from api import views_utils
 from api.pagination import LimitedPagination
 from api.permissions import IsAuthorOrReadOnly, ThisUserOrAdmin
 from api.serializers import (
@@ -24,9 +25,9 @@ from api.serializers import (
 from recipe.models import (
     Favorite, Ingredient, Recipe, RecipeIngredients, ShoppingCart, Tag
 )
-from user.models import CustomUser, Follow
-from utils.text_constants import ErrorMessage, views_utils
-from foodgram.backend.api.filters import (
+from user.models import User, Follow
+from utils.text_constants import Message
+from api.filters import (
     IngredientFilter, RecipeFilter, TagFilter
 )
 
@@ -34,7 +35,7 @@ from foodgram.backend.api.filters import (
 class UserListViewSet(views.UserViewSet):
     """Представление пользователей."""
 
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         ThisUserOrAdmin
@@ -57,7 +58,7 @@ class UserListViewSet(views.UserViewSet):
     )
     def subscriptions(self, request):
         """Получение подписок и сериализация."""
-        authors = CustomUser.objects.filter(following__user=request.user)
+        authors = User.objects.filter(following__user=request.user)
         paginator = PageNumberPagination()
         paginator.page_size = 6
         result_page = paginator.paginate_queryset(authors, request)
@@ -77,14 +78,14 @@ class UserListViewSet(views.UserViewSet):
     def subscribe(self, request, id):
         """Подписка на автора, отписка."""
         user = request.user
-        author = get_object_or_404(CustomUser, id=id)
+        author = get_object_or_404(User, id=id)
         if request.method == 'POST':
             if user != author and not Follow.objects.filter(
                 user=user,
                 author=author
             ).exists():
                 Follow.objects.create(user=request.user, author=author)
-                follows = CustomUser.objects.filter(id=id).first()
+                follows = User.objects.filter(id=id).first()
                 serializer = SubscriptionListSerializer(
                     follows,
                     context={'request': request}
@@ -94,7 +95,7 @@ class UserListViewSet(views.UserViewSet):
                     status=status.HTTP_201_CREATED
                 )
             return Response(
-                {'errors': ErrorMessage.SUBSCRIPTION_ERROR},
+                {'errors': Message.ErrorMessage.SUBSCRIPTION_ERROR},
                 status=status.HTTP_400_BAD_REQUEST
             )
         if user != author and Follow.objects.filter(
@@ -104,7 +105,7 @@ class UserListViewSet(views.UserViewSet):
             Follow.objects.filter(user=user, author=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-            {'errors': ErrorMessage.NO_ENTRY},
+            {'errors': Message.ErrorMessage.NO_ENTRY},
             status=status.HTTP_400_BAD_REQUEST
         )
 

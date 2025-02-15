@@ -10,7 +10,7 @@ from foodgram_backend.constants import (
 )
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     """Кастомная модель пользователя."""
 
     email = models.EmailField(
@@ -54,9 +54,6 @@ class CustomUser(AbstractUser):
             raise ValidationError('Недопустимое имя пользователя: "me".')
 
 
-User = get_user_model()
-
-
 class Follow(models.Model):
     """Модель подписок."""
 
@@ -66,7 +63,7 @@ class Follow(models.Model):
         related_name='followers'
     )
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        get_user_model(),
         on_delete=models.CASCADE,
         related_name='following'
     )

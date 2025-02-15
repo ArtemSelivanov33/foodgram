@@ -7,14 +7,14 @@ from rest_framework import serializers
 from recipe.models import (
     Favorite, Ingredient, Recipe, RecipeIngredients, ShoppingCart, Tag
 )
-from user.models import CustomUser, Follow
+from user.models import User, Follow
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор создания пользователя."""
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'id',
             'first_name',
@@ -31,7 +31,7 @@ class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
             'email',
             'id',
@@ -359,7 +359,7 @@ class SubscriptionListSerializer(CustomUserSerializer):
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = CustomUserSerializer.Meta.fields + (
             'recipes', 'recipes_count'
         )

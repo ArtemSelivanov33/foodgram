@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
 
-from utils.text_constants import ErrorMessage
+from utils.text_constants import Message
 from .serializers import FavoriteSerializer
 
 
@@ -27,11 +27,11 @@ class FavoriteViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin):
                     return Response(
                         serializer.data, status=status.HTTP_201_CREATED
                     )
-                return Response({'errors': ErrorMessage.ADD_ENTRY_ERROR},
+                return Response({'errors': Message.ErrorMessage.ADD_ENTRY_ERROR},
                                 status=status.HTTP_400_BAD_REQUEST)
             if model_to_add.objects.filter(user=user, recipe=recipe).exists():
                 model_to_add.objects.filter(user=user, recipe=recipe).delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response({'errors': ErrorMessage.NO_ENTRY},
+            return Response({'errors': Message.ErrorMessage.NO_ENTRY},
                             status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

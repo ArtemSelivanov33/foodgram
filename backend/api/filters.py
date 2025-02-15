@@ -1,6 +1,6 @@
 from django_filters.rest_framework import FilterSet, filters
 
-from recipe.models import Ingredient, Recipe
+from recipe.models import Ingredient, Recipe, Tag
 
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -58,3 +58,15 @@ class IngredientFilter(FilterSet):
     class Meta:
         model = Ingredient
         fields = ('name',)
+
+
+class TagFilter(FilterSet):
+    """Фильтр для модели тега."""
+
+    name = filters.CharFilter(lookup_expr='icontains', label='Название тега')
+    color = filters.CharFilter(lookup_expr='exact', label='Цвет тега')
+    slug = filters.CharFilter(lookup_expr='exact', label='Слаг тега')
+
+    class Meta:
+        model = Tag
+        fields = ['name', 'color', 'slug']
