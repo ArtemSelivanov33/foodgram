@@ -117,7 +117,6 @@ class UserListViewSet(views.UserViewSet):
     )
     def me(self, request):
         """Представление авторизованного пользователя."""
-
         if request.method == 'GET':
             serializer = CustomUserSerializer(
                 request.user,

@@ -1,5 +1,5 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
 from api.views import (
     IngredientViewSet, RecipeViewSet, TagViewset, UserListViewSet
@@ -7,14 +7,17 @@ from api.views import (
 
 app_name = 'api'
 
-router_v1 = SimpleRouter()
+router = DefaultRouter()
+router.register('tags', TagViewset, basename='tag')
+router.register('ingredients', IngredientViewSet, basename='ingredient')
+router.register('recipes', RecipeViewSet, basename='recipe')
+router.register('users', UserListViewSet, basename='user')
 
-router_v1.register('tags', TagViewset)
-router_v1.register('ingredients', IngredientViewSet)
-router_v1.register('recipes', RecipeViewSet)
-router_v1.register('users', UserListViewSet)
+api_urls = [path('', include(router.urls)), ]
 
+auth_urls = [path('', include('djoser.urls.authtoken'))]
 
 urlpatterns = [
-    path('v1/', include(router_v1.urls)),
+    path('', include(api_urls)),
+    path('auth/', include(auth_urls))
 ]
