@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
-from foodgram.backend.foodgram_backend.constants import (
+from foodgram_backend.constants import (
     MODELS_FIELDS_MAX_LENGTH, TAG_COLOR_MAX_LENGTH, TAG_NAME_MAX_LENGTH
 )
 
