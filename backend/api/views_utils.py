@@ -27,8 +27,10 @@ class FavoriteViewSet(GenericViewSet, CreateModelMixin, DestroyModelMixin):
                     return Response(
                         serializer.data, status=status.HTTP_201_CREATED
                     )
-                return Response({'errors': Message.ErrorMessage.ADD_ENTRY_ERROR},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'errors': Message.ErrorMessage.ADD_ENTRY_ERROR},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if model_to_add.objects.filter(user=user, recipe=recipe).exists():
                 model_to_add.objects.filter(user=user, recipe=recipe).delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
