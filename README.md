@@ -66,7 +66,7 @@ python manage.py migrate
 ```
 6. После применения миграций можно ввести команду создания суперпользователя и следовать указаниям терминала
 ```sh
-python manage.py createsuper
+python manage.py createsuperuser
 ```
 7. Запуск локального сервера
 
