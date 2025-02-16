@@ -23,7 +23,7 @@ class User(AbstractUser):
         verbose_name='Юзернейм',
         validators=[
             RegexValidator(
-                regex=r'^[w.@+-Z',
+                regex=r'^[\w.@+-]+$',
                 message='Недопустимые символы в юзернейме.'
             )
         ]
