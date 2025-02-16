@@ -22,10 +22,7 @@ class User(AbstractUser):
         unique=True,
         verbose_name='Юзернейм',
         validators=[
-            RegexValidator(
-                regex=r'^[\w.@+-]+$',
-                message='Недопустимые символы в юзернейме.'
-            )
+            RegexValidator(regex=r'^[\w.@+-]+\Z', )
         ]
     )
     first_name = models.CharField(
