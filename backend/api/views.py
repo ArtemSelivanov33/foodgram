@@ -179,8 +179,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return queryset
 
     @action(
-            detail=True, methods=['post', 'delete'],
-            permission_classes=[permissions.IsAuthenticated]
+        detail=True, methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def favorite(self, request, pk=None):
         recipe = self.get_object()
@@ -200,8 +200,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
 
     @action(
-            detail=True, methods=['post', 'delete'],
-            permission_classes=[permissions.IsAuthenticated]
+        detail=True, methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def shopping_cart(self, request, pk=None):
         recipe = self.get_object()
@@ -221,8 +221,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
 
     @action(
-            detail=False, methods=['get'],
-            permission_classes=[permissions.IsAuthenticated]
+        detail=False, methods=['get'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def download_shopping_cart(self, request):
         user = request.user
