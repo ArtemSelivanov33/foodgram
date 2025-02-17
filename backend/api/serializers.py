@@ -176,7 +176,6 @@ class RecipeListSerializer(RecipeSerializer):
 
     def get_is_favorited(self, obj):
         """Проверка наличия рецепта в избранном."""
-
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
@@ -187,7 +186,6 @@ class RecipeListSerializer(RecipeSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         """Проверка наличия рецепта в корзине."""
-
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
