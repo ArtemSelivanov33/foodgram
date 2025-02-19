@@ -264,7 +264,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class CustomUserViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def create(self, request):
         # Регистрация пользователя
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():

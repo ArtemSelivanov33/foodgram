@@ -22,15 +22,19 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('api/users/', CustomUserViewSet.as_view(), name='register'),
+    path(
+        'api/users/',
+        CustomUserViewSet.as_view({'post': 'create'}),
+        name='register'
+    ),
     path(
         'api/auth/token/login/',
-        CustomUserViewSet.as_view(),
+        CustomUserViewSet.as_view({'post': 'post_token'}),
         name='token_login'
     ),
     path(
         'api/auth/token/logout/',
-        CustomUserViewSet.as_view(),
+        CustomUserViewSet.as_view({'delete': 'delete_token'}),
         name='token_logout'
     ),
 ]
