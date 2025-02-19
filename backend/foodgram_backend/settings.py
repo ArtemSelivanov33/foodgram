@@ -197,6 +197,7 @@ DJOSER = {
         'current_user': 'api.serializers.CustomUserSerializer',
         'user': 'api.serializers.CustomUserSerializer',
         'user_create': 'api.serializers.CustomUserCreateSerializer',
+        'token_create': 'api.serializers.CustomTokenObtainPairSerializer',
     },
     'HIDE_USERS': False,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
