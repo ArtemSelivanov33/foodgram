@@ -262,7 +262,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return response
 
 
-class CustomUserViewSet(APIView):
+class CustomUserViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
