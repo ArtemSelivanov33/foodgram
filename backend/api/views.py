@@ -270,7 +270,10 @@ class CustomUserViewSet(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"success": "Пользователь успешно зарегистрирован."}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"success": "Пользователь успешно зарегистрирован."},
+                status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def post_token(self, request):
