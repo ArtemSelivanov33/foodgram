@@ -3,6 +3,7 @@ import base64
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from recipe.models import (
     Favorite, Ingredient, Recipe, RecipeIngredients, ShoppingCart, Tag
@@ -394,3 +395,25 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Favorite.objects.create(**validated_data)
+
+
+# Сериализатор для создания пользователя
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+
+# Кастомный сериализатор для получения токена
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['email'] = user.email  # Добавьте email в токен, если необходимо
+        return token
