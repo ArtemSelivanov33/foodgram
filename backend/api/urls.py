@@ -1,5 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.views import (
     CustomUserViewSet,
@@ -29,12 +30,12 @@ urlpatterns = [
     ),
     path(
         'api/auth/token/login/',
-        CustomUserViewSet.as_view({'post': 'post_token'}),
+        TokenObtainPairView.as_view(),
         name='token_login'
     ),
-    path(
-        'api/auth/token/logout/',
-        CustomUserViewSet.as_view({'delete': 'delete_token'}),
-        name='token_logout'
-    ),
+    # path(
+    #     'api/auth/token/logout/',
+    #     CustomUserViewSet.as_view({'delete': 'delete_token'}),
+    #     name='token_logout'
+    # ),
 ]
