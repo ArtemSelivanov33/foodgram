@@ -152,13 +152,31 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Представление рецептов."""
 
     queryset = Recipe.objects.all()
-    permission_classes = (
+    permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
-    )
-    filter_backends = (DjangoFilterBackend,)
+    ]
+    filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
     pagination_class = LimitedPagination
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        is_favorited = self.request.query_params.get('is_favorited')
+        author_id = self.request.query_params.get('author')
+        tags = self.request.query_params.getlist('tags')
+
+        if is_favorited is not None:
+            queryset = queryset.filter(is_favorited=self.request.user)
+        if author_id is not None:
+            queryset = queryset.filter(author__id=author_id)
+        if tags:
+            queryset = queryset.filter(tags__slug__in=tags)
+
+        return queryset
 
     def get_serializer_class(self):
         """Выбор сериализатора рецептов."""
@@ -171,12 +189,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(permissions.IsAuthenticated,)
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def favorite(self, request, pk):
         """Добавление рецепта в избранное, удаление из избранного."""
-
         return views_utils.favorite(
             self,
             request,
@@ -188,12 +205,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
-        permission_classes=(permissions.IsAuthenticated,)
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def shopping_cart(self, request, pk):
         """Добавление рецепта в список покупок, удаление из списка покупок."""
-
         return views_utils.favorite(
             self,
             request,
@@ -205,12 +221,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=('get',),
-        permission_classes=(permissions.IsAuthenticated,)
+        methods=['get'],
+        permission_classes=[permissions.IsAuthenticated]
     )
     def download_shopping_cart(self, request):
         """Скачивание txt-файла списка покупок."""
-
         shopping_cart = ShoppingCart.objects.filter(
             user=request.user
         ).values_list('recipe_id', flat=True)

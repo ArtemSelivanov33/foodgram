@@ -397,8 +397,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
         return Favorite.objects.create(**validated_data)
 
 
-# Сериализатор для создания пользователя
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания пользователя."""
+
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -410,10 +411,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-# Кастомный сериализатор для получения токена
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """Кастомный сериализатор для получения токена."""
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['email'] = user.email  # Добавьте email в токен, если необходимо
+        token['email'] = user.email
         return token
