@@ -232,4 +232,4 @@ git push
     sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser  # создание суперпользователя
     ```
 
-## Автор: Селиванов Артем, студент 93 когорты.
+## Автор: Селиванов Артем, студент 96 когорты.

@@ -1,73 +1,48 @@
-from django_filters.rest_framework import FilterSet, filters
+import django_filters
+from django_filters.rest_framework import CharFilter, FilterSet
 
-from recipe.models import Ingredient, Recipe, Tag
-
-
-class CharInFilter(filters.BaseInFilter, filters.CharFilter):
-    """Кастомный фильтр. Позволяет фильтровать по нескольким значениям."""
-
-
-class RecipeFilter(FilterSet):
-    """Фильтр рецептов."""
-
-    author = filters.NumberFilter(
-        field_name='author__id'
-    )
-
-    tags = filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        lookup_expr='in',
-        to_field_name='slug',
-        queryset=Tag.objects.all(),
-    )
-
-    is_favorited = filters.NumberFilter(
-        method='filter_is_favorited'
-    )
-
-    is_in_shopping_cart = filters.NumberFilter(
-        method='filter_is_in_shopping_cart'
-    )
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'author', 'tags', 'is_favorited', 'is_in_shopping_cart'
-        )
-
-    def filter_is_favorited(self, queryset, _, value):
-        """Проверка наличия рецепта в избранном пользователя."""
-        if value:
-            return queryset.filter(favorites__user=self.request.user)
-        return queryset
-
-    def filter_is_in_shopping_cart(self, queryset, _, value):
-        """Проверка наличия рецепта в корзине покупок пользователя."""
-        if value:
-            return queryset.filter(shopping_cart__user=self.request.user)
-        return queryset
+from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(FilterSet):
-    """Фильтр ингредиентов."""
-
-    name = filters.CharFilter(
+    name = CharFilter(
         field_name='name',
-        lookup_expr='icontains'
+        lookup_expr='istartswith'
     )
 
     class Meta:
         model = Ingredient
         fields = ('name',)
+        ordering = ('name',)
 
 
-class TagFilter(FilterSet):
-    """Фильтр для модели тега."""
-
-    name = filters.CharFilter(lookup_expr='icontains', label='Название тега')
-    color = filters.CharFilter(lookup_expr='exact', label='Цвет тега')
-    slug = filters.CharFilter(lookup_expr='exact', label='Слаг тега')
+class RecipeFilter(FilterSet):
+    tags = django_filters.AllValuesMultipleFilter(
+        field_name='tags__slug',
+        lookup_expr='icontains',
+    )
+    is_in_shopping_cart = django_filters.NumberFilter(
+        method='get_is_in_shopping_cart',
+    )
+    is_favorited = django_filters.NumberFilter(
+        method='get_is_favorited',
+    )
 
     class Meta:
-        model = Tag
-        fields = ['name', 'color', 'slug']
+        model = Recipe
+        fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
+        ordering = ('-pub_date',)
+
+    def get_is_in_shopping_cart(self, queryset, name, value):
+        if self.request.user.is_authenticated and value:
+            return queryset.filter(
+                cart_recipes__user=self.request.user
+            )
+        return queryset
+
+    def get_is_favorited(self, queryset, name, value):
+        if self.request.user.is_authenticated and value:
+            return queryset.filter(
+                user_favorite__user=self.request.user
+            )
+        return queryset

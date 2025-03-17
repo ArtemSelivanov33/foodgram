@@ -1,20 +1,9 @@
-from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework import permissions
 
 
-class IsAuthorOrReadOnly(BasePermission):
-    """Доступ разрешается только владельцу объекта или для операций чтения."""
-
-    message = 'Редактирование возможно только автором записи.'
-
+class IsAuthorOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return (request.method in SAFE_METHODS
-                or obj.author == request.user)
-
-
-class ThisUserOrAdmin(BasePermission):
-    message = 'Редактировать можно только свой профиль.'
-
-    def has_permission(self, request, view):
-        return (request.user.is_staff
-                or request.user == view.kwargs.get('id')
-                or (request.method in SAFE_METHODS))
+        return (
+            request.method in permissions.SAFE_METHODS
+            or request.user == obj.author
+        )

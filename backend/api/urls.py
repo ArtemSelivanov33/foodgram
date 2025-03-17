@@ -1,29 +1,50 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.views import (
-    IngredientViewSet,
-    RecipeViewSet,
-    TagViewset,
-    UserListViewSet
-)
+from api import views
 
 app_name = 'api'
 
-router = DefaultRouter()
-router.register('tags', TagViewset, basename='tag')
-router.register('ingredients', IngredientViewSet, basename='ingredient')
-router.register('recipes', RecipeViewSet, basename='recipe')
-router.register('users', UserListViewSet, basename='user')
+api_router = DefaultRouter()
 
+api_router.register(
+    'users',
+    views.UsersViewSet,
+    basename='users'
+)
+
+api_router.register(
+    'tags',
+    views.TagsViewSet,
+    basename='tags'
+)
+
+api_router.register(
+    'ingredients',
+    views.IngredientsViewSet,
+    basename='ingredients'
+)
+
+api_router.register(
+    'recipes',
+    views.RecipeViewSet,
+    basename='recipe'
+)
+
+auth_urls = [
+    path(
+        'token/login/',
+        views.TokenCreateView.as_view(),
+        name='login'
+    ),
+    path(
+        'token/logout/',
+        views.TokenDeleteView.as_view(),
+        name='logout'
+    )
+]
 
 urlpatterns = [
-    path('', include(router.urls)),
-    # path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
-    path(
-        'api/users/',
-        UserListViewSet.as_view({'post': 'create'}),
-        name='register'
-    ),
+    path('auth/', include(auth_urls)),
+    path('', include(api_router.urls)),
 ]
