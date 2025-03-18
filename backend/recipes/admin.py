@@ -11,12 +11,16 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'text',
         'cooking_time',
+        'tags',
+        'ingredients',
+        'created_at',
     )
     search_fields = ('name',)
     list_filter = (
         'author',
         'tags',
-        'ingredients'
+        'ingredients',
+        'created_at',
     )
 
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import DateTimeField
 from django.db import models
 
 from foodgram_backend import constants
@@ -91,6 +92,11 @@ class Recipe(TagIngredientRecipeModel):
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
+    )
+    created_at = DateTimeField(
+        verbose_name="Дата публикации",
+        auto_now_add=True,
+        editable=True,
     )
 
     class Meta(TagIngredientRecipeModel.Meta):

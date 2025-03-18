@@ -225,8 +225,8 @@ git push
     \help  \l  \dt  # команда psql
     ```
     ```sh
-    sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_data  # команда на сервере для загрузки ингредиентов и тегов в базу данных,
-                                                                                                    # выполняется в отдельном окне терминала.
+    sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_ingredients  # команда на сервере для загрузки ингредиентов в базу данных,
+                                                                                                           # выполняется в отдельном окне терминала.
     ```
     ```sh
     sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser  # создание суперпользователя

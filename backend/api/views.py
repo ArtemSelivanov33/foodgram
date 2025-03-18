@@ -139,6 +139,11 @@ class UsersViewSet(
             pk=pk
         )
         if request.method == 'POST':
+            if user.following.filter(following=following).exists():
+                return Response(
+                    {"detail": "Вы уже подписаны на этого автора."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
@@ -149,15 +154,16 @@ class UsersViewSet(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
-        follow = user.following.filter(following=following)
-        if follow.exists():
-            follow.delete()
+        elif request.method == 'DELETE':
+            follow = user.following.filter(following=following)
+            if follow.exists():
+                follow.delete()
+                return Response(
+                    status=status.HTTP_204_NO_CONTENT
+                )
             return Response(
-                status=status.HTTP_204_NO_CONTENT
+                status=status.HTTP_400_BAD_REQUEST
             )
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST
-        )
 
     @action(
         methods=['get'],
@@ -227,7 +233,7 @@ class TokenDeleteView(views.APIView):
 class RecipeViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.all().order_by('-created_at')
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
