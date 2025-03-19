@@ -11,7 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Favorite, ShoppingCart, ShortLink
+from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
@@ -154,8 +154,8 @@ class UsersViewSet(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
-        elif request.method == 'DELETE':
-            follow = user.following.filter(following=following)
+        if request.method == 'DELETE':
+            follow = Follow.objects.filter(user=user, following=following)
             if follow.exists():
                 follow.delete()
                 return Response(
