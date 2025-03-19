@@ -94,12 +94,6 @@ class Recipe(TagIngredientRecipeModel):
         on_delete=models.CASCADE,
         verbose_name='Автор',
     )
-    created_at = DateTimeField(
-        verbose_name="Дата публикации",
-        auto_now_add=True,
-        default=timezone.now,
-        editable=True,
-    )
 
     class Meta(TagIngredientRecipeModel.Meta):
         verbose_name = 'Рецепт'
