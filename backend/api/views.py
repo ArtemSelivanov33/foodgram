@@ -233,7 +233,7 @@ class TokenDeleteView(views.APIView):
 class RecipeViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = Recipe.objects.all().order_by('-created_at')
+    queryset = Recipe.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsAuthorOrReadOnly
