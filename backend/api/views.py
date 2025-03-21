@@ -266,7 +266,12 @@ class RecipeViewSet(
             short_url = generate_short_url(recipe_url)
             short_link.short_link = short_url
             short_link.save()
-        message = {'short-link': str(short_link)}
+        # message = {'short-link': str(short_link)}
+        # return Response(
+        #     message,
+        #     status=status.HTTP_200_OK
+        # )
+        message = {'full_url': short_link.full_url}
         return Response(
             message,
             status=status.HTTP_200_OK
