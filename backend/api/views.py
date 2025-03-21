@@ -266,16 +266,16 @@ class RecipeViewSet(
             short_url = generate_short_url(recipe_url)
             short_link.short_link = short_url
             short_link.save()
-        # message = {'short-link': str(short_link)}
-        # return Response(
-        #     message,
-        #     status=status.HTTP_200_OK
-        # )
+        message = {'full-url': str(short_link.full_url)}
         return Response(
-            short_link.full_url,
-            status=status.HTTP_200_OK,
-            content_type='text/plain'
+            message,
+            status=status.HTTP_200_OK
         )
+        # return Response(
+        #     short_link.full_url,
+        #     status=status.HTTP_200_OK,
+        #     content_type='text/plain'
+        # )
 
     @action(
         methods=['post', 'delete'],
