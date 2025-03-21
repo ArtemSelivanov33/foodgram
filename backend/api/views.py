@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Sum
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, views, viewsets
@@ -11,11 +11,11 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Follow, Favorite, ShoppingCart
+from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-# from api.utils import generate_short_url
+from api.utils import generate_short_url
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
@@ -252,28 +252,25 @@ class RecipeViewSet(
         url_path='get-link',
         url_name='get_link',
     )
-    # def get_short_link(self, request, pk):
-    #     recipe = get_object_or_404(
-    #         Recipe,
-    #         id=pk
-    #     )
-    #     recipe_url = recipe.get_absolute_url()
-    #     short_link, created = ShortLink.objects.get_or_create(
-    #         full_url=recipe_url,
-    #         recipe=recipe
-    #     )
-    #     if created:
-    #         short_url = generate_short_url(recipe_url)
-    #         short_link.short_link = short_url
-    #         short_link.save()
-    #     message = {'short-link': str(short_link)}
-    #     return Response(
-    #         message,
-    #         status=status.HTTP_200_OK
-    #     )
-    def get_short_link(self, request: HttpRequest):
-        current_url = request.build_absolute_uri()  # Получаем полный URL
-        return HttpResponse(current_url)  # Возвращаем URL как строку
+    def get_short_link(self, request, pk):
+        recipe = get_object_or_404(
+            Recipe,
+            id=pk
+        )
+        recipe_url = recipe.get_absolute_url()
+        short_link, created = ShortLink.objects.get_or_create(
+            full_url=recipe_url,
+            recipe=recipe
+        )
+        if created:
+            short_url = generate_short_url(recipe_url)
+            short_link.short_link = short_url
+            short_link.save()
+        message = {'short-link': str(short_link)}
+        return Response(
+            message,
+            status=status.HTTP_200_OK
+        )
 
     @action(
         methods=['post', 'delete'],
