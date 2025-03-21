@@ -1,4 +1,5 @@
-from django.conf import settings
+import os
+# from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
@@ -99,7 +100,8 @@ class Recipe(TagIngredientRecipeModel):
         default_related_name = 'recipes'
 
     def get_absolute_url(self):
-        return f'{settings.ALLOWED_HOSTS[0]}/recipes/{self.id}/'
+        domain = os.getenv('DOMAIN', 'localhost')
+        return f'{domain}/recipes/{self.id}/'
 
 
 class RecipeIngredient(models.Model):
