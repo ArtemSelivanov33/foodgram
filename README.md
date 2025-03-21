@@ -106,6 +106,7 @@ DEBUG                          # False
 POSTGRES_DB                    # db
 POSTGRES_PASSWORD              # foodgram_password
 POSTGRES_USER                  # foodgram_user
+DOMAIN                         # Ваш домен
 ```
 
 

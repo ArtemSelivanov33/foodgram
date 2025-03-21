@@ -271,7 +271,7 @@ class RecipeViewSet(
         #     message,
         #     status=status.HTTP_200_OK
         # )
-        message = {'full_url': short_link.full_url}
+        message = {'full_url': str(short_link.full_url)}
         return Response(
             message,
             status=status.HTTP_200_OK
