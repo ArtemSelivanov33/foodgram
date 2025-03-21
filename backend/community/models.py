@@ -84,7 +84,7 @@ class ShortLink(models.Model):
         ordering = ('id',)
 
     def __str__(self):
-        return self.full_url
+        return self.short_link
 
 
 class ShoppingCart(models.Model):
