@@ -112,12 +112,6 @@ class UsersViewSet(
         serializer.is_valid(raise_exception=True)
         user.password = serializer.data.get('new_password')
         user.save()
-        # token = get_object_or_404(
-        #     Token,
-        #     user=user
-        # )
-        # token.delete()
-        # logout(self.request)
         return Response(
             data='Пароль успешно изменен',
             status=status.HTTP_204_NO_CONTENT
@@ -187,12 +181,30 @@ class UsersViewSet(
             following_users,
             request
         )
-        serializer = serializers.FollowGetSerializer(
-            result_page,
-            many=True,
-            context={'request': request}
-        )
-        return paginator.get_paginated_response(serializer.data)
+        # serializer = serializers.FollowGetSerializer(
+        #     result_page,
+        #     many=True,
+        #     context={'request': request}
+        # )
+        # return paginator.get_paginated_response(serializer.data)
+        users_data = []
+        for following_user in result_page:
+            user_recipes_count = following_user.recipes.count()
+            user_data = serializers.FollowGetSerializer(
+                following_user,
+                context={'request': request}
+            ).data
+            user_data['recipes_count'] = user_recipes_count
+            users_data.append(user_data)
+
+        response = {
+            "count": following_users.count(),
+            "next": paginator.get_next_link(),
+            "previous": paginator.get_previous_link(),
+            "results": users_data
+        }
+
+        return Response(response)
 
 
 class TokenCreateView(views.APIView):
