@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from api.validators import validate_username
 from foodgram_backend import constants
 
 
@@ -12,7 +13,9 @@ class User(AbstractUser):
         max_length=constants.USERNAME_LENGTH,
         unique=True,
         validators=(
-            RegexValidator(constants.REGEX_USERNAME),)
+            RegexValidator(constants.REGEX_USERNAME),
+            validate_username,
+        )
     )
     email = models.EmailField(
         verbose_name='email',
@@ -40,11 +43,6 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ('username',)
-
-    def clean(self):
-        super().clean()
-        if self.username.lower() == 'me':
-            raise ValidationError('Имя пользователя не может быть "me".')
 
     def __str__(self):
         return self.username[:constants.USERNAME_CUT]

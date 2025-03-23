@@ -112,12 +112,12 @@ class UsersViewSet(
         serializer.is_valid(raise_exception=True)
         user.password = serializer.data.get('new_password')
         user.save()
-        token = get_object_or_404(
-            Token,
-            user=user
-        )
-        token.delete()
-        logout(self.request)
+        # token = get_object_or_404(
+        #     Token,
+        #     user=user
+        # )
+        # token.delete()
+        # logout(self.request)
         return Response(
             data='Пароль успешно изменен',
             status=status.HTTP_204_NO_CONTENT
