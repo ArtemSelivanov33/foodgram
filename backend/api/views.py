@@ -181,12 +181,6 @@ class UsersViewSet(
             following_users,
             request
         )
-        # serializer = serializers.FollowGetSerializer(
-        #     result_page,
-        #     many=True,
-        #     context={'request': request}
-        # )
-        # return paginator.get_paginated_response(serializer.data)
         users_data = []
         for following_user in result_page:
             user_recipes_count = following_user.recipes.count()

@@ -98,6 +98,9 @@ class Recipe(TagIngredientRecipeModel):
         verbose_name_plural = 'Рецепты'
         default_related_name = 'recipes'
 
+    def favorites_count(self):
+        return self.user_favorite.count()
+
     def get_absolute_url(self):
         domain = os.getenv('DOMAIN', 'localhost')
         return f'{domain}/recipes/{self.id}/'
