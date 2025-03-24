@@ -1,4 +1,5 @@
 import os
+from django.contrib import admin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
@@ -51,6 +52,11 @@ class Ingredient(TagIngredientRecipeModel):
         verbose_name_plural = 'Ингредиенты'
 
 
+class IngredientInline(admin.TabularInline):
+    model = Ingredient
+    extra = 1
+
+
 class Recipe(TagIngredientRecipeModel):
     name = models.CharField(
         verbose_name='Название рецепта',
@@ -98,6 +104,7 @@ class Recipe(TagIngredientRecipeModel):
         verbose_name_plural = 'Рецепты'
         default_related_name = 'recipes'
 
+    @admin.display(description='Количество добавлений в избранное')
     def favorites_count(self):
         return self.user_favorite.count()
 
