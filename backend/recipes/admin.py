@@ -19,7 +19,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags',
         'ingredients',
     )
-    filter_horizontal = ('tags',)
+    filter_horizontal = ('tags', 'ingredients',)
 
 
 @admin.register(Tag)
