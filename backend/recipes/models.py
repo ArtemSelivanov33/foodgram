@@ -82,11 +82,13 @@ class Recipe(TagIngredientRecipeModel):
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Тег',
+        verbose_name_plural='Теги',
         related_name='recipes',
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        verbose_name='Ингредиенты',
+        verbose_name='Ингредиент',
+        verbose_name_plural='Ингредиенты',
     )
     author = models.ForeignKey(
         User,
