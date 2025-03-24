@@ -3,6 +3,11 @@ from django.contrib import admin
 from recipes.models import Ingredient, Recipe, Tag
 
 
+class IngredientInline(admin.TabularInline):
+    model = Ingredient
+    extra = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
@@ -13,6 +18,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'cooking_time',
         'favorites_count',
     )
+    inlines = (IngredientInline,)
     search_fields = ('name',)
     list_filter = (
         'author',
