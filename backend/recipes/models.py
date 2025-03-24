@@ -46,20 +46,10 @@ class Ingredient(TagIngredientRecipeModel):
         default='кг',
         verbose_name='Единица измерения'
     )
-    recipe = models.ForeignKey(
-        'Recipe',
-        related_name='ingredients',
-        on_delete=models.CASCADE
-    )
 
     class Meta(TagIngredientRecipeModel.Meta):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-
-
-class IngredientInline(admin.TabularInline):
-    model = Ingredient
-    extra = 1
 
 
 class Recipe(TagIngredientRecipeModel):
