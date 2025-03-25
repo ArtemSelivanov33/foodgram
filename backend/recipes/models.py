@@ -85,7 +85,6 @@ class Recipe(TagIngredientRecipeModel):
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name='Ингредиент',
-        through='RecipeIngredient',
     )
     author = models.ForeignKey(
         User,
