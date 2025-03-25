@@ -2,6 +2,7 @@ import os
 from django.contrib import admin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
 
 from foodgram_backend import constants
 from users.models import User
@@ -95,6 +96,7 @@ class Recipe(TagIngredientRecipeModel):
     created_at = models.DateTimeField(
         verbose_name='Дата публикации',
         auto_now_add=True,
+        default=timezone.now
     )
 
     class Meta(TagIngredientRecipeModel.Meta):

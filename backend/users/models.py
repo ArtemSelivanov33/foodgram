@@ -33,7 +33,6 @@ class User(AbstractUser):
         related_name='subscribers',
         symmetrical=False,
         blank=True,
-        null=True,
     )
 
     USERNAME_FIELD = 'email'
