@@ -23,7 +23,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = (
         'author',
         'tags',
-        'ingredients',
+        # 'ingredients',
     )
     filter_horizontal = ('tags',)
 
