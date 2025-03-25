@@ -12,7 +12,6 @@ class TagIngredientRecipeModel(models.Model):
         verbose_name='Name',
         max_length=100,
         unique=True,
-        blank=False,
     )
 
     class Meta:
@@ -28,8 +27,6 @@ class Tag(TagIngredientRecipeModel):
         verbose_name='Слаг тега',
         max_length=constants.TAG_MAX_LENGTH,
         unique=True,
-        blank=True,
-        null=True,
     )
 
     class Meta(TagIngredientRecipeModel.Meta):
@@ -51,6 +48,9 @@ class Ingredient(TagIngredientRecipeModel):
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
+    def __str__(self):
+        return f'{self.name}, {self.measurement_unit}.'
+
 
 class Recipe(TagIngredientRecipeModel):
     name = models.CharField(
@@ -61,9 +61,7 @@ class Recipe(TagIngredientRecipeModel):
     )
     image = models.ImageField(
         verbose_name='Изображение',
-        blank=True,
         upload_to='recipes/',
-        null=True,
     )
     text = models.TextField(
         verbose_name='Описание рецепта',
@@ -94,11 +92,17 @@ class Recipe(TagIngredientRecipeModel):
         on_delete=models.CASCADE,
         verbose_name='Автор',
     )
+    created_at = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+        null=True,
+    )
 
     class Meta(TagIngredientRecipeModel.Meta):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         default_related_name = 'recipes'
+        ordering = ('-created_at',)
 
     @admin.display(description='Количество добавлений в избранное')
     def favorites_count(self):
