@@ -95,7 +95,6 @@ class Recipe(TagIngredientRecipeModel):
     )
     created_at = models.DateTimeField(
         verbose_name='Дата публикации',
-        auto_now_add=True,
         default=timezone.now
     )
 
