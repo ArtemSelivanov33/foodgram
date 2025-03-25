@@ -2,7 +2,6 @@ import os
 from django.contrib import admin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.utils import timezone
 
 from foodgram_backend import constants
 from users.models import User
