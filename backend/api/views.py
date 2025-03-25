@@ -133,6 +133,11 @@ class UsersViewSet(
             pk=pk
         )
         if request.method == 'POST':
+            if user.pk == following.pk:
+                return Response(
+                    {"detail": "Нельзя подписаться на самого себя."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if user.following.filter(following=following).exists():
                 return Response(
                     {"detail": "Вы уже подписаны на этого автора."},

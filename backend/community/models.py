@@ -98,17 +98,11 @@ class ShoppingCart(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
     )
-    # pub_date = models.DateTimeField(
-    #     verbose_name='Дата добавления',
-    #     default=timezone.now,
-    #     db_index=True,
-    # )
 
     class Meta:
         default_related_name = 'cart_recipes'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
-        # ordering = ('-pub_date',)
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
