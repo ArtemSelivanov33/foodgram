@@ -111,3 +111,41 @@ class ShoppingCart(models.Model):
 
     def __str__(self):
         return f'Рецепт {self.recipe} в корзине пользователя {self.user}'
+
+
+class UserRecipeRelation(models.Model):
+    RELATIONSHIP_CHOICES = [
+        ('favorite', 'Избранное'),
+        ('shopping_cart', 'Корзина'),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепт',
+    )
+    relationship_type = models.CharField(
+        max_length=20,
+        choices=RELATIONSHIP_CHOICES,
+        verbose_name='Тип взаимосвязи',
+    )
+
+    class Meta:
+        default_related_name = 'user_recipe_relations'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe', 'relationship_type'),
+                name='unique_user_recipe_relation',
+            ),
+        )
+
+    def __str__(self):
+        relationship = (
+            "избранном" if self.relationship_type == "favorite" else "корзине"
+        )
+        return f'{self.recipe} у {self.user} в {relationship}'
