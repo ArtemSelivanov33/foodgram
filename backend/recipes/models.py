@@ -94,7 +94,7 @@ class Recipe(TagIngredientRecipeModel):
     )
     created_at = models.DateTimeField(
         verbose_name='Дата публикации',
-        default=timezone.now
+        auto_now_add=True,
     )
 
     class Meta(TagIngredientRecipeModel.Meta):
