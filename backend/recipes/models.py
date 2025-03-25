@@ -83,11 +83,11 @@ class Recipe(TagIngredientRecipeModel):
         verbose_name='Тег',
         related_name='recipes',
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        verbose_name='Ингредиент',
-        through='RecipeIngredient'
-    )
+    # ingredients = models.ManyToManyField(
+    #     Ingredient,
+    #     verbose_name='Ингредиент',
+    #     through='RecipeIngredient'
+    # )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
