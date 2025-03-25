@@ -134,8 +134,4 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
-
 PATH_TO_INGREDIENTS = BASE_DIR / 'data/ingredients.json'

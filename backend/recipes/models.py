@@ -10,7 +10,7 @@ from users.models import User
 class TagIngredientRecipeModel(models.Model):
     name = models.CharField(
         verbose_name='Name',
-        max_length=100,
+        max_length=constants.MODEL_NAME_LENGTH,
         unique=True,
     )
 
@@ -85,6 +85,7 @@ class Recipe(TagIngredientRecipeModel):
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name='Ингредиент',
+        through='RecipeIngredient'
     )
     author = models.ForeignKey(
         User,
