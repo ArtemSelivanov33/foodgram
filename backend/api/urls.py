@@ -28,23 +28,23 @@ api_router.register(
 api_router.register(
     'recipes',
     views.RecipeViewSet,
-    basename='recipe'
+    basename='recipes'
 )
 
 auth_urls = [
     path(
-        'token/login/',
+        'login/',
         views.TokenCreateView.as_view(),
         name='login'
     ),
     path(
-        'token/logout/',
+        'logout/',
         views.TokenDeleteView.as_view(),
         name='logout'
     )
 ]
 
 urlpatterns = [
-    path('auth/', include(auth_urls)),
+    path('auth/token/', include(auth_urls)),
     path('', include(api_router.urls)),
 ]

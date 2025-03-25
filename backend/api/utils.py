@@ -1,8 +1,6 @@
 import os
 from hashlib import blake2b
 
-# from django.conf import settings
-
 from foodgram_backend.constants import DIGEST_SIZE
 
 
