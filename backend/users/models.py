@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-from api.validators import validate_username, validate_not_self_subscription
+from api.validators import validate_username
 from foodgram_backend import constants
 
 
@@ -33,7 +33,6 @@ class User(AbstractUser):
         related_name='subscribers',
         symmetrical=False,
         blank=True,
-        validators=[validate_not_self_subscription]
     )
 
     USERNAME_FIELD = 'email'
