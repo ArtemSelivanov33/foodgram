@@ -11,7 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Favorite, ShoppingCart, ShortLink
+from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
@@ -124,35 +124,43 @@ class UsersViewSet(
         detail=True,
     )
     def subscribe(self, request, pk):
-        user = get_object_or_404(User, username=request.user.username)
-        following = get_object_or_404(User, pk=pk)
-
+        user = get_object_or_404(
+            User,
+            username=request.user.username
+        )
+        following = get_object_or_404(
+            User,
+            pk=pk
+        )
         if request.method == 'POST':
-            # Проверяем, не подписан ли уже пользователь на данного автора
+            if user.pk == following.pk:
+                return Response(
+                    {"detail": "Нельзя подписаться на самого себя."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if user.following.filter(following=following).exists():
                 return Response(
                     {"detail": "Вы уже подписаны на этого автора."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
-            # Создание подписки
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        elif request.method == 'DELETE':
-            # Удаление подписки
-            follow = user.following.filter(following=following)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        if request.method == 'DELETE':
+            follow = Follow.objects.filter(user=user, following=following)
             if follow.exists():
                 follow.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-
+                return Response(
+                    status=status.HTTP_204_NO_CONTENT
+                )
             return Response(
-                {"detail": "Вы не подписаны на этого автора."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
