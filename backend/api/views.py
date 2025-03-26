@@ -14,7 +14,7 @@ from api import serializers
 from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
-from api.permissions import IsfollowingOrReadOnly
+from api.permissions import IsAuthorOrReadOnly
 from api.utils import generate_short_url
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
@@ -123,9 +123,9 @@ class UsersViewSet(
         permission_classes=(permissions.IsAuthenticated,),
         detail=True,
     )
-    def subscribe(self, request, id):
+    def subscribe(self, request, pk):
         user = request.user
-        following = get_object_or_404(User, pk=id)
+        following = get_object_or_404(User, pk=pk)
 
         if request.method == 'POST':
             serializer = serializers.FollowSerializer(
@@ -224,7 +224,7 @@ class RecipeViewSet(
     queryset = Recipe.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        IsfollowingOrReadOnly
+        IsAuthorOrReadOnly
     )
     serializer_class = serializers.RecipeCreateSerializer
     pagination_class = CustomPagination
@@ -232,7 +232,7 @@ class RecipeViewSet(
     filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
-        serializer.save(following=self.request.user)
+        serializer.save(author=self.request.user)
 
     @action(
         detail=True,
