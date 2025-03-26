@@ -124,22 +124,45 @@ class UsersViewSet(
         detail=True,
     )
     def subscribe(self, request, pk):
-        user = request.user
-        following = get_object_or_404(User, pk=pk)
-
+        user = get_object_or_404(
+            User,
+            username=request.user.username
+        )
+        following = get_object_or_404(
+            User,
+            pk=pk
+        )
         if request.method == 'POST':
-            serializer = serializers.FollowGetSerializer(
-                following, data=request.data, context={'request': request}
+            if user.pk == following.pk:
+                return Response(
+                    {"detail": "Нельзя подписаться на самого себя."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            if user.following.filter(following=following).exists():
+                return Response(
+                    {"detail": "Вы уже подписаны на этого автора."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            serializer = serializers.FollowSerializer(
+                data={'user': user.id, 'following': following.id},
+                context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
-            Follow.objects.create(user=user, following=following)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
         if request.method == 'DELETE':
-            get_object_or_404(
-                Follow, user=user, following=following
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            follow = Follow.objects.filter(user=user, following=following)
+            if follow.exists():
+                follow.delete()
+                return Response(
+                    status=status.HTTP_204_NO_CONTENT
+                )
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(
         methods=['get'],
