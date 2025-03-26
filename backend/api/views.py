@@ -128,7 +128,7 @@ class UsersViewSet(
         following = get_object_or_404(User, pk=pk)
 
         if request.method == 'POST':
-            serializer = serializers.FollowSerializer(
+            serializer = serializers.FollowGetSerializer(
                 following, data=request.data, context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
