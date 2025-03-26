@@ -14,7 +14,7 @@ from api import serializers
 from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
-from api.permissions import IsAuthorOrReadOnly
+from api.permissions import IsfollowingOrReadOnly
 from api.utils import generate_short_url
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
@@ -123,65 +123,23 @@ class UsersViewSet(
         permission_classes=(permissions.IsAuthenticated,),
         detail=True,
     )
-    def subscribe(self, request, pk):
-        user = get_object_or_404(User, username=request.user.username)
-        following = get_object_or_404(User, pk=pk)
+    def subscribe(self, request, id):
+        user = request.user
+        following = get_object_or_404(User, pk=id)
 
         if request.method == 'POST':
-            # if user.pk == following.pk:
-            #     return Response(
-            #         {"detail": "Нельзя подписаться на самого себя."},
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
-            # if user.following.filter(following=following).exists():
-            #     return Response(
-            #         {"detail": "Вы уже подписаны на этого автора."},
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
             serializer = serializers.FollowSerializer(
-                data={'user': user.id, 'following': following.id},
-                context={'request': request}
+                following, data=request.data, context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
-            serializer.save()
+            Follow.objects.create(user=user, following=following)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            # Формируем ответ с данными автора
-            response_data = {
-                "email": following.email,
-                "id": following.id,
-                "username": following.username,
-                "first_name": following.first_name,
-                "last_name": following.last_name,
-                "is_subscribed": True,
-                "recipes": [],  # Здесь можно добавить рецепты, если нужно
-                "recipes_count": following.recipes.count(),
-            }
-
-            return Response(response_data, status=status.HTTP_201_CREATED)
-
-        elif request.method == 'DELETE':
-            follow = Follow.objects.filter(user=user, following=following)
-            if follow.exists():
-                follow.delete()
-                # Формируем ответ с данными автора после отписки
-                response_data = {
-                    "email": following.email,
-                    "id": following.id,
-                    "username": following.username,
-                    "first_name": following.first_name,
-                    "last_name": following.last_name,
-                    "is_subscribed": False,
-                    "recipes": [],  # Здесь также можно добавить рецепты
-                    "recipes_count": following.recipes.count(),
-                }
-                return Response(
-                    response_data, status=status.HTTP_204_NO_CONTENT
-                )
-
-            return Response(
-                {"detail": "Вы не подписаны на этого автора."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if request.method == 'DELETE':
+            get_object_or_404(
+                Follow, user=user, following=following
+            ).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['get'],
@@ -266,7 +224,7 @@ class RecipeViewSet(
     queryset = Recipe.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        IsAuthorOrReadOnly
+        IsfollowingOrReadOnly
     )
     serializer_class = serializers.RecipeCreateSerializer
     pagination_class = CustomPagination
@@ -274,7 +232,7 @@ class RecipeViewSet(
     filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(following=self.request.user)
 
     @action(
         detail=True,
