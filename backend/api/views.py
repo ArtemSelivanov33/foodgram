@@ -133,16 +133,6 @@ class UsersViewSet(
             pk=pk
         )
         if request.method == 'POST':
-            if user.pk == following.pk:
-                return Response(
-                    {"detail": "Нельзя подписаться на самого себя."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if user.following.filter(following=following).exists():
-                return Response(
-                    {"detail": "Вы уже подписаны на этого автора."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
@@ -153,16 +143,15 @@ class UsersViewSet(
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
-        if request.method == 'DELETE':
-            follow = Follow.objects.filter(user=user, following=following)
-            if follow.exists():
-                follow.delete()
-                return Response(
-                    status=status.HTTP_204_NO_CONTENT
-                )
+        follow = user.following.filter(following=following)
+        if follow.exists():
+            follow.delete()
             return Response(
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_204_NO_CONTENT
             )
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(
         methods=['get'],
