@@ -31,7 +31,7 @@ class RecipeFilter(FilterSet):
     class Meta:
         model = Recipe
         fields = ('author', 'tags', 'is_in_shopping_cart', 'is_favorited')
-        ordering = ('-pub_date',)
+        ordering = ('-created_at',)
 
     def get_is_in_shopping_cart(self, queryset, name, value):
         if self.request.user.is_authenticated and value:
