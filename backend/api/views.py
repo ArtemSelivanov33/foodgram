@@ -123,17 +123,17 @@ class UsersViewSet(
         permission_classes=(permissions.IsAuthenticated,),
         detail=True,
     )
-    def subscribe(self, request, id):
+    def subscribe(self, request, pk):
         """Подписка на автора, отписка."""
         user = request.user
-        following = get_object_or_404(User, id=id)
+        following = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
             if user != following and not Follow.objects.filter(
                 user=user,
                 following=following
             ).exists():
                 Follow.objects.create(user=request.user, following=following)
-                follows = User.objects.filter(id=id).first()
+                follows = User.objects.filter(pk=pk).first()
                 serializer = serializers.FollowSerializer(
                     follows,
                     context={'request': request}
