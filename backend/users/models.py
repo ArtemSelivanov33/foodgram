@@ -29,9 +29,7 @@ class User(AbstractUser):
     )
     is_subscribed = models.BooleanField(
         default=False,
-        verbose_name='Подписка',
-        related_name='subscribers',
-        symmetrical=False,
+        verbose_name='Подписка'
     )
 
     USERNAME_FIELD = 'email'
