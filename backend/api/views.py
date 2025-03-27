@@ -123,46 +123,39 @@ class UsersViewSet(
         permission_classes=(permissions.IsAuthenticated,),
         detail=True,
     )
-    def subscribe(self, request, pk):
-        user = get_object_or_404(
-            User,
-            username=request.user.username
-        )
-        following = get_object_or_404(
-            User,
-            pk=pk
-        )
+    def subscribe(self, request, id):
+        """Подписка на автора, отписка."""
+        user = request.user
+        following = get_object_or_404(User, id=id)
         if request.method == 'POST':
-            if user.pk == following.pk:
-                return Response(
-                    {"detail": "Нельзя подписаться на самого себя."},
-                    status=status.HTTP_400_BAD_REQUEST
+            if user != following and not Follow.objects.filter(
+                user=user,
+                following=following
+            ).exists():
+                Follow.objects.create(user=request.user, following=following)
+                follows = User.objects.filter(id=id).first()
+                serializer = serializers.FollowSerializer(
+                    follows,
+                    context={'request': request}
                 )
-            if user.following.filter(following=following).exists():
                 return Response(
-                    {"detail": "Вы уже подписаны на этого автора."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            serializer = serializers.FollowSerializer(
-                data={'user': user.id, 'following': following.id},
-                context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-        if request.method == 'DELETE':
-            follow = Follow.objects.filter(user=user, following=following)
-            if follow.exists():
-                follow.delete()
-                return Response(
-                    status=status.HTTP_204_NO_CONTENT
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
                 )
             return Response(
+                {'errors': 'Ошибка подписки.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        if user != following and Follow.objects.filter(
+            user=user,
+            following=following
+        ).exists():
+            Follow.objects.filter(user=user, following=following).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'errors': 'Ошибка. Нет записи в БД для удаления.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @action(
         methods=['get'],
