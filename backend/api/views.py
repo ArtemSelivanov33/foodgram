@@ -154,7 +154,7 @@ class UsersViewSet(
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
+        if request.method == 'DELETE':
             follow = Follow.objects.filter(user=user, following=following)
             if follow.exists():
                 follow.delete()
