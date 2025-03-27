@@ -126,17 +126,24 @@ class UsersViewSet(
     def subscribe(self, request, pk):
         user = get_object_or_404(User, username=request.user.username)
         following = get_object_or_404(User, pk=pk)
+
+        # Проверка на попытку подписаться на самого себя
+        if user.pk == following.pk:
+            return Response(
+                {"detail": "Нельзя подписаться на самого себя."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Проверка на существование подписки
+        follow = Follow.objects.filter(user=user, following=following).first()
+
         if request.method == 'POST':
-            # if user.pk == following.pk:
-            #     return Response(
-            #         {"detail": "Нельзя подписаться на самого себя."},
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
-            # if user.following.filter(following=following).exists():
-            #     return Response(
-            #         {"detail": "Вы уже подписаны на этого автора."},
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
+            if follow:
+                return Response(
+                    {"detail": "Вы уже подписаны на этого автора."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Создаем новую подписку
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
@@ -154,10 +161,9 @@ class UsersViewSet(
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            follow = Follow.objects.filter(user=user, following=following)
-            if follow.exists():
-                follow.delete()
+        elif request.method == 'DELETE':
+            if follow:
+                follow.delete()  # Удаляем подписку
                 response_data = {
                     "email": following.email,
                     "id": following.id,
@@ -165,16 +171,17 @@ class UsersViewSet(
                     "first_name": following.first_name,
                     "last_name": following.last_name,
                     "is_subscribed": False,
-                    "recipes": [],  # Здесь также можно добавить рецепты
+                    "recipes": [],  # Здесь можно добавить рецепты, если нужно
                     "recipes_count": following.recipes.count(),
                 }
                 return Response(
                     response_data, status=status.HTTP_204_NO_CONTENT
                 )
-            return Response(
-                {"detail": "Вы не подписаны на этого автора."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            else:
+                return Response(
+                    {"detail": "Подписка не найдена."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
     @action(
         methods=['get'],
