@@ -124,38 +124,57 @@ class UsersViewSet(
         detail=True,
     )
     def subscribe(self, request, pk):
-        """Подписка на автора, отписка."""
-        user = request.user
+        user = get_object_or_404(User, username=request.user.username)
         following = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
-            if user != following and not Follow.objects.filter(
-                user=user,
-                following=following
-            ).exists():
-                Follow.objects.create(user=request.user, following=following)
-                follows = User.objects.filter(pk=pk).first()
-                serializer = serializers.FollowSerializer(
-                    follows,
-                    context={'request': request}
-                )
+            # if user.pk == following.pk:
+            #     return Response(
+            #         {"detail": "Нельзя подписаться на самого себя."},
+            #         status=status.HTTP_400_BAD_REQUEST
+            #     )
+            # if user.following.filter(following=following).exists():
+            #     return Response(
+            #         {"detail": "Вы уже подписаны на этого автора."},
+            #         status=status.HTTP_400_BAD_REQUEST
+            #     )
+            serializer = serializers.FollowSerializer(
+                data={'user': user.id, 'following': following.id},
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            response_data = {
+                "email": following.email,
+                "id": following.id,
+                "username": following.username,
+                "first_name": following.first_name,
+                "last_name": following.last_name,
+                "is_subscribed": True,
+                "recipes": [],  # Здесь можно добавить рецепты, если нужно
+                "recipes_count": following.recipes.count(),
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        elif request.method == 'DELETE':
+            follow = Follow.objects.filter(user=user, following=following)
+            if follow.exists():
+                follow.delete()
+                response_data = {
+                    "email": following.email,
+                    "id": following.id,
+                    "username": following.username,
+                    "first_name": following.first_name,
+                    "last_name": following.last_name,
+                    "is_subscribed": False,
+                    "recipes": [],  # Здесь также можно добавить рецепты
+                    "recipes_count": following.recipes.count(),
+                }
                 return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
+                    response_data, status=status.HTTP_204_NO_CONTENT
                 )
             return Response(
-                {'errors': 'Ошибка подписки.'},
+                {"detail": "Вы не подписаны на этого автора."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if user != following and Follow.objects.filter(
-            user=user,
-            following=following
-        ).exists():
-            Follow.objects.filter(user=user, following=following).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(
-            {'errors': 'Ошибка. Нет записи в БД для удаления.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
 
     @action(
         methods=['get'],
