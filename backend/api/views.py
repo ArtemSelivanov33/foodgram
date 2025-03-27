@@ -125,7 +125,7 @@ class UsersViewSet(
     )
     def subscribe(self, request, pk):
         user = get_object_or_404(User, username=request.user.username)
-        following = get_object_or_404(Follow, pk=pk)
+        following = get_object_or_404(User, pk=pk)
         if request.method == 'POST':
             # if user.pk == following.pk:
             #     return Response(
