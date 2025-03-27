@@ -127,7 +127,7 @@ class UsersViewSet(
         user = get_object_or_404(User, username=request.user.username)
         following = get_object_or_404(User, pk=pk)
 
-        # Проверка на попытку подписаться на самого себя
+        # Проверка: нельзя подписаться на самого себя.
         if user.pk == following.pk:
             return Response(
                 {"detail": "Нельзя подписаться на самого себя."},
@@ -137,12 +137,14 @@ class UsersViewSet(
         # Проверка на существование подписки
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        if request.method == 'POST':
-            if follow:
-                return Response(
-                    {"detail": "Вы уже подписаны на этого автора."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        if follow:  # Если подписка существует
+            # Удаляем подписку
+            follow.delete()
+            return Response(
+                {"detail": "Вы отписались от этого автора."},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        else:  # Если подписки нет
             # Создаем новую подписку
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
@@ -161,27 +163,6 @@ class UsersViewSet(
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            if follow:
-                follow.delete()  # Удаляем подписку
-                response_data = {
-                    "email": following.email,
-                    "id": following.id,
-                    "username": following.username,
-                    "first_name": following.first_name,
-                    "last_name": following.last_name,
-                    "is_subscribed": False,
-                    "recipes": [],  # Здесь можно добавить рецепты, если нужно
-                    "recipes_count": following.recipes.count(),
-                }
-                return Response(
-                    response_data, status=status.HTTP_204_NO_CONTENT
-                )
-            else:
-                return Response(
-                    {"detail": "Подписка не найдена."},
-                    status=status.HTTP_404_NOT_FOUND
-                )
 
     @action(
         methods=['get'],
