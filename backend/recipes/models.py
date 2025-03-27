@@ -90,6 +90,7 @@ class Recipe(TagIngredientRecipeModel):
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
+        related_name='recipes'
     )
     created_at = models.DateTimeField(
         verbose_name='Дата публикации',

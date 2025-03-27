@@ -127,25 +127,22 @@ class UsersViewSet(
         user = get_object_or_404(User, username=request.user.username)
         following = get_object_or_404(User, pk=pk)
 
-        # Проверка: нельзя подписаться на самого себя.
         if user.pk == following.pk:
             return Response(
                 {"detail": "Нельзя подписаться на самого себя."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Проверка на существование подписки
+        recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        if follow:  # Если подписка существует
-            # Удаляем подписку
+        if follow:
             follow.delete()
             return Response(
                 {"detail": "Вы отписались от этого автора."},
                 status=status.HTTP_204_NO_CONTENT
             )
-        else:  # Если подписки нет
-            # Создаем новую подписку
+        else:
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
@@ -158,8 +155,12 @@ class UsersViewSet(
                 "username": following.username,
                 "first_name": following.first_name,
                 "last_name": following.last_name,
-                "is_subscribed": True,
-                "recipes": [],  # Здесь можно добавить рецепты, если нужно
+                "is_subscribed": Follow.objects.filter(
+                    user=user, following=following).exists(),
+                "recipes": [{
+                    "id": recipe.id,
+                    "title": recipe.title,
+                } for recipe in recipes],
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)

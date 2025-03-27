@@ -27,12 +27,11 @@ class User(AbstractUser):
         null=True,
         upload_to='avatars'
     )
-    is_subscribed = models.ManyToManyField(
-        to='self',
+    is_subscribed = models.BooleanField(
+        default=False,
         verbose_name='Подписка',
         related_name='subscribers',
         symmetrical=False,
-        blank=True,
     )
 
     USERNAME_FIELD = 'email'
