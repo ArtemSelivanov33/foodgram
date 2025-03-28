@@ -126,58 +126,38 @@ class UsersViewSet(
     def subscribe(self, request, pk):
         user = get_object_or_404(User, username=request.user.username)
         following = get_object_or_404(User, pk=pk)
-
         if user.pk == following.pk:
             return Response(
                 {"detail": "Нельзя подписаться на самого себя."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
         recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
-
-        request_method = None
-        if follow is not None:
-            request_method = 'DELETE'
-        else:
-            request_method = 'POST'
-
-        if request_method == 'POST':
-            if self.last_request_method == 'POST':
-                return Response(
-                    {"detail": "Неверный порядок запросов."},
-                    status=status.HTTP_400_BAD_REQUEST
+        if request.method == 'POST':
+            if not follow:
+                serializer = serializers.FollowSerializer(
+                    data={'user': user.id, 'following': following.id},
+                    context={'request': request}
                 )
-            serializer = serializers.FollowSerializer(
-                data={'user': user.id, 'following': following.id},
-                context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            response_data = {
-                "email": following.email,
-                "id": following.id,
-                "username": following.username,
-                "first_name": following.first_name,
-                "last_name": following.last_name,
-                "is_subscribed": True,
-                "recipes": [{
-                    "id": recipe.id,
-                    "title": recipe.title,
-                } for recipe in recipes],
-                "recipes_count": following.recipes.count(),
-            }
-            self.last_request_method = 'POST'  # Запоминаем метод
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        if request_method == 'DELETE':
-            if self.last_request_method == 'DELETE':
-                return Response(
-                    {"detail": "Неверный порядок запросов."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                response_data = {
+                    "email": following.email,
+                    "id": following.id,
+                    "username": following.username,
+                    "first_name": following.first_name,
+                    "last_name": following.last_name,
+                    "is_subscribed": True,
+                    "recipes": [{
+                        "id": recipe.id,
+                        "title": recipe.title,
+                    } for recipe in recipes],
+                    "recipes_count": following.recipes.count(),
+                }
+                return Response(response_data, status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
             if follow:  # Если подписка есть, то отписываем
                 follow.delete()
-                self.last_request_method = 'DELETE'  # Запоминаем метод
                 return Response(
                     {"detail": "Вы отписались от этого автора."},
                     status=status.HTTP_204_NO_CONTENT
@@ -227,10 +207,6 @@ class UsersViewSet(
         }
 
         return Response(response)
-
-
-class YourViewSet(viewsets.ViewSet):
-    last_request_method = None  # Переменная для хранения последнего метода
 
 
 class TokenCreateView(views.APIView):
