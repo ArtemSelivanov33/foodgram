@@ -136,7 +136,13 @@ class UsersViewSet(
         recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        if request.method == 'DELETE':
+        request_method = None
+        if follow is not None:
+            request_method = 'DELETE'
+        else:
+            request_method = 'POST'
+
+        if request_method == 'DELETE':
             if follow:  # Если подписка есть, то отписываем
                 follow.delete()
                 return Response(
@@ -147,7 +153,7 @@ class UsersViewSet(
                 {"detail": "Вы уже не подписаны на этого автора."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if request.method == 'POST':
+        if request_method == 'POST':
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
