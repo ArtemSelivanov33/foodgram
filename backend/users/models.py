@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-from community.models import Follow
 from api.validators import validate_username
 from foodgram_backend import constants
 
@@ -42,6 +41,7 @@ class User(AbstractUser):
         ordering = ('username',)
 
     def update_subscription_status(self):
+        from community.models import Follow
         self.is_subscribed = Follow.objects.filter(user=self).exists()
         self.save()
 
