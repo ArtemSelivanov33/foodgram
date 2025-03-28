@@ -133,25 +133,27 @@ class UsersViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Поиск существующей подписки
+        recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        # Обработка POST запроса
-        if request.method == 'POST':
-            if follow is not None:
+        request_method = None
+        if follow is not None:
+            request_method = 'DELETE'
+        else:
+            request_method = 'POST'
+
+        if request_method == 'POST':
+            if self.last_request_method == 'POST':
                 return Response(
-                    {"detail": "Вы уже подписаны на этого автора."},
+                    {"detail": "Неверный порядок запросов."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-
-            # Создаем новую подписку
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
-
             response_data = {
                 "email": following.email,
                 "id": following.id,
@@ -162,23 +164,27 @@ class UsersViewSet(
                 "recipes": [{
                     "id": recipe.id,
                     "title": recipe.title,
-                } for recipe in following.recipes.all()],
+                } for recipe in recipes],
                 "recipes_count": following.recipes.count(),
             }
+            self.last_request_method = 'POST'  # Запоминаем метод
             return Response(response_data, status=status.HTTP_201_CREATED)
-
-        # Обработка DELETE запроса
-        elif request.method == 'DELETE':
-            if follow is None:
+        if request_method == 'DELETE':
+            if self.last_request_method == 'DELETE':
                 return Response(
-                    {"detail": "Подписка не найдена."},
-                    status=status.HTTP_404_NOT_FOUND
+                    {"detail": "Неверный порядок запросов."},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
-
-            follow.delete()  # Удаляем подписку
+            if follow:  # Если подписка есть, то отписываем
+                follow.delete()
+                self.last_request_method = 'DELETE'  # Запоминаем метод
+                return Response(
+                    {"detail": "Вы отписались от этого автора."},
+                    status=status.HTTP_204_NO_CONTENT
+                )
             return Response(
-                {"detail": "Вы отписались от этого автора."},
-                status=status.HTTP_204_NO_CONTENT
+                {"detail": "Вы уже не подписаны на этого автора."},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
     @action(
@@ -221,6 +227,10 @@ class UsersViewSet(
         }
 
         return Response(response)
+
+
+class YourViewSet(viewsets.ViewSet):
+    last_request_method = None  # Переменная для хранения последнего метода
 
 
 class TokenCreateView(views.APIView):
