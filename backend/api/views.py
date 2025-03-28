@@ -134,6 +134,13 @@ class UsersViewSet(
         recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
         if request.method == 'POST':
+            if follow:
+                return Response(
+                    {
+                        "detail": "Вы уже подписаны на этого автора. "
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             if not follow:
                 serializer = serializers.FollowSerializer(
                     data={'user': user.id, 'following': following.id},
