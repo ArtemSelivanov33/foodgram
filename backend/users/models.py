@@ -40,10 +40,10 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
         ordering = ('username',)
 
-    def update_subscription_status(self):
-        from community.models import Follow
-        self.is_subscribed = Follow.objects.filter(user=self).exists()
-        self.save()
+    # def update_subscription_status(self):
+    #     from community.models import Follow
+    #     self.is_subscribed = Follow.objects.filter(user=self).exists()
+    #     self.save()
 
     def __str__(self):
         return self.username[:constants.USERNAME_CUT]
