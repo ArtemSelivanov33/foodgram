@@ -166,8 +166,7 @@ class UsersViewSet(
                 "username": following.username,
                 "first_name": following.first_name,
                 "last_name": following.last_name,
-                "is_subscribed": Follow.objects.filter(
-                    user=user, following=following).exists(),
+                "is_subscribed": True,
                 "recipes": [{
                     "id": recipe.id,
                     "title": recipe.title,
