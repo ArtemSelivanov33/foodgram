@@ -133,22 +133,25 @@ class UsersViewSet(
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        recipes = following.recipes.all()
+        # Поиск существующей подписки
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        request_method = None
-        if follow is not None:
-            request_method = 'DELETE'
-        else:
-            request_method = 'POST'
+        # Обработка POST запроса
+        if request.method == 'POST':
+            if follow is not None:
+                return Response(
+                    {"detail": "Вы уже подписаны на этого автора."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        if request_method == 'POST':
+            # Создаем новую подписку
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
             response_data = {
                 "email": following.email,
                 "id": following.id,
@@ -159,20 +162,23 @@ class UsersViewSet(
                 "recipes": [{
                     "id": recipe.id,
                     "title": recipe.title,
-                } for recipe in recipes],
+                } for recipe in following.recipes.all()],
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
-        if request_method == 'DELETE':
-            if follow:  # Если подписка есть, то отписываем
-                follow.delete()
+
+        # Обработка DELETE запроса
+        elif request.method == 'DELETE':
+            if follow is None:
                 return Response(
-                    {"detail": "Вы отписались от этого автора."},
-                    status=status.HTTP_204_NO_CONTENT
+                    {"detail": "Подписка не найдена."},
+                    status=status.HTTP_404_NOT_FOUND
                 )
+
+            follow.delete()  # Удаляем подписку
             return Response(
-                {"detail": "Вы уже не подписаны на этого автора."},
-                status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Вы отписались от этого автора."},
+                status=status.HTTP_204_NO_CONTENT
             )
 
     @action(
