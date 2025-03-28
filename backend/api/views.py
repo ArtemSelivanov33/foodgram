@@ -159,12 +159,11 @@ class UsersViewSet(
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         else:
-            if follow is True and request.method == 'DELETE':
-                follow.delete()
-                return Response(
-                    {"detail": "Вы отписались от этого автора."},
-                    status=status.HTTP_204_NO_CONTENT
-                )
+            follow.delete()
+            return Response(
+                {"detail": "Вы отписались от этого автора."},
+                status=status.HTTP_204_NO_CONTENT
+            )
 
     @action(
         methods=['get'],
