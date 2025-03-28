@@ -141,13 +141,15 @@ class UsersViewSet(
                 )
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
+                follow = Follow.objects.filter(
+                    user=user, following=following).exists()
                 response_data = {
                     "email": following.email,
                     "id": following.id,
                     "username": following.username,
                     "first_name": following.first_name,
                     "last_name": following.last_name,
-                    "is_subscribed": True,
+                    "is_subscribed": follow,
                     "recipes": [{
                         "id": recipe.id,
                         "title": recipe.title,
