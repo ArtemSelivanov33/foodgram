@@ -134,20 +134,14 @@ class UsersViewSet(
         recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
         if request.method == 'POST':
-            # if follow:
-            #     return Response(
-            #         {
-            #             "detail": "Вы уже подписаны на этого автора. "
-            #         },
-            #         status=status.HTTP_400_BAD_REQUEST
-            #     )
-            if follow:  # Если подписка есть, то отписываем
-                follow.delete()
+            if follow:
                 return Response(
-                    {"detail": "Вы отписались от этого автора."},
-                    status=status.HTTP_204_NO_CONTENT
+                    {
+                        "detail": "Вы уже подписаны на этого автора. "
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
                 )
-            if not follow:
+            elif not follow:
                 serializer = serializers.FollowSerializer(
                     data={'user': user.id, 'following': following.id},
                     context={'request': request}
@@ -170,7 +164,7 @@ class UsersViewSet(
                     "recipes_count": following.recipes.count(),
                 }
                 return Response(response_data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
+        elif request.method == 'DELETE':
             if follow:  # Если подписка есть, то отписываем
                 follow.delete()
                 return Response(
