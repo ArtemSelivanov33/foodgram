@@ -134,9 +134,9 @@ class UsersViewSet(
             )
 
         recipes = following.recipes.all()
-        follow = Follow.objects.filter(user=user, following=following).exists()
+        follow = Follow.objects.filter(user=user, following=following).first()
 
-        if follow is True:
+        if follow:
             follow.delete()
             return Response(
                 {"detail": "Вы отписались от этого автора."},
