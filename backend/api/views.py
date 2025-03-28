@@ -136,13 +136,7 @@ class UsersViewSet(
         recipes = following.recipes.all()
         follow = Follow.objects.filter(user=user, following=following).first()
 
-        if follow and request.method == 'DELETE':
-            follow.delete()
-            return Response(
-                {"detail": "Вы отписались от этого автора."},
-                status=status.HTTP_204_NO_CONTENT
-            )
-        if not follow and request.method == 'POST':
+        if request.method == 'POST':
             serializer = serializers.FollowSerializer(
                 data={'user': user.id, 'following': following.id},
                 context={'request': request}
@@ -164,6 +158,13 @@ class UsersViewSet(
                 "recipes_count": following.recipes.count(),
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
+        else:
+            if follow and request.method == 'DELETE':
+                follow.delete()
+                return Response(
+                    {"detail": "Вы отписались от этого автора."},
+                    status=status.HTTP_204_NO_CONTENT
+                )
 
     @action(
         methods=['get'],
