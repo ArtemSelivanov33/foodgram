@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django import forms
-from django.forms import InlineFormSet
+from django.forms import BaseInlineFormSet
 
 from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient
 
 
-class IngredientInlineFormSet(InlineFormSet):
+class IngredientInlineFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
         if not any(form.cleaned_data for form in self.forms):
