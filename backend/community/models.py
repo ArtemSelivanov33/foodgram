@@ -74,6 +74,5 @@ class ShoppingCart(FavoriteShoppingCartMixin):
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
 
-
     def __str__(self):
         return f'Рецепт {self.recipe} в корзине пользователя {self.user}'
