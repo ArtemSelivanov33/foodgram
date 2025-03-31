@@ -1,5 +1,5 @@
 import os
-from django.contrib import admin
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
@@ -7,29 +7,19 @@ from foodgram_backend import constants
 from users.models import User
 
 
-class TagIngredientRecipeModel(models.Model):
+class Tag(models.Model):
     name = models.CharField(
         verbose_name='Name',
         max_length=constants.MODEL_NAME_LENGTH,
         unique=True,
     )
-
-    class Meta:
-        abstract = True
-        ordering = ('name',)
-
-    def __str__(self):
-        return self.name[:20]
-
-
-class Tag(TagIngredientRecipeModel):
     slug = models.SlugField(
         verbose_name='Слаг тега',
         max_length=constants.TAG_MAX_LENGTH,
         unique=True,
     )
 
-    class Meta(TagIngredientRecipeModel.Meta):
+    class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -37,44 +27,46 @@ class Tag(TagIngredientRecipeModel):
         return self.name
 
 
-class Ingredient(TagIngredientRecipeModel):
+class Ingredient(models.Model):
+    name = models.CharField(
+        verbose_name='Name',
+        max_length=constants.MODEL_NAME_LENGTH,
+    )
     measurement_unit = models.CharField(
         max_length=constants.MEASUREMENT_UNIT_MAX_LENGTH,
-        default='кг',
         verbose_name='Единица измерения'
     )
 
-    class Meta(TagIngredientRecipeModel.Meta):
+    class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = (models.UniqueConstraint(
+            fields=['name', 'measurement_unit'],
+            name='ingredients_uniques'
+        ),)
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}.'
 
 
-class Recipe(TagIngredientRecipeModel):
+class Recipe(models.Model):
     name = models.CharField(
         verbose_name='Название рецепта',
         max_length=constants.RECIPE_NAME_MAX_LENGTH,
         unique=True,
-        blank=False,
     )
     image = models.ImageField(
-        verbose_name='Изображение',
+        'Изображение',
         upload_to='recipes/',
     )
     text = models.TextField(
-        verbose_name='Описание рецепта',
-        blank=False,
+        'Описание рецепта',
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления в минутах',
-        blank=False,
-        db_index=True,
         validators=(
             MinValueValidator(constants.COOKING_TIME_MIN),
             MaxValueValidator(constants.COOKING_TIME_MAX),
-
         )
     )
     tags = models.ManyToManyField(
@@ -84,6 +76,7 @@ class Recipe(TagIngredientRecipeModel):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        through="RecipeIngredient",
         verbose_name='Ингредиент',
     )
     author = models.ForeignKey(
@@ -97,19 +90,14 @@ class Recipe(TagIngredientRecipeModel):
         auto_now_add=True,
     )
 
-    class Meta(TagIngredientRecipeModel.Meta):
+    class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        default_related_name = 'recipes'
         ordering = ('-created_at',)
-
-    @admin.display(description='Количество добавлений в избранное')
-    def favorites_count(self):
-        return self.user_favorite.count()
 
     def get_absolute_url(self):
         domain = os.getenv('DOMAIN', 'localhost')
-        return f'{domain}/recipes/{self.id}/'
+        return f'{domain}/recipes/{self.pk}/'
 
 
 class RecipeIngredient(models.Model):
@@ -117,13 +105,15 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
+        related_name='recipe_ingredients',
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
+        related_name='recipe_ingredients',
     )
-    amount = models.PositiveSmallIntegerField(
+    amount = models.PositiveIntegerField(
         verbose_name='Количество',
         validators=(
             MinValueValidator(constants.AMOUNT_MIN),
@@ -132,15 +122,15 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        default_related_name = 'recipe_ingredients'
+        verbose_name = 'Ингредиент рецепта'
+        verbose_name_plural = 'Ингредиенты рецепта'
         constraints = (
             models.UniqueConstraint(
                 fields=('recipe', 'ingredient'),
                 name='unique_recipe_ingredient',
             ),
         )
-        verbose_name = 'Ингредиент рецепта'
-        verbose_name_plural = 'Ингредиенты рецепта'
+
 
     def __str__(self):
         return f'Ингредиент {self.ingredient} в рецепте {self.recipe}'

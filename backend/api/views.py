@@ -7,15 +7,14 @@ from rest_framework import permissions, status, views, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Follow, Favorite, ShoppingCart, ShortLink
+from community.models import Follow, Favorite, ShoppingCart
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-from api.utils import generate_short_url
+# from api.utils import generate_short_url
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
@@ -118,104 +117,49 @@ class UsersViewSet(
         )
 
     @action(
-        methods=['post', 'delete'],
-        url_path='subscribe',
+        methods=['POST'],
         permission_classes=(permissions.IsAuthenticated,),
         detail=True,
     )
-    def subscribe(self, request, pk):
-        user = get_object_or_404(User, username=request.user.username)
+    def subscribe(self, request, pk=None):
+        user = request.user
         following = get_object_or_404(User, pk=pk)
-        if user.pk == following.pk:
-            return Response(
-                {"detail": "Нельзя подписаться на самого себя."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        recipes = following.recipes.all()
-        follow = Follow.objects.filter(user=user, following=following).first()
-        if request.method == 'POST':
-            if follow:
-                return Response(
-                    {
-                        "detail": "Вы уже подписаны на этого автора. "
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            elif not follow:
-                serializer = serializers.FollowSerializer(
-                    data={'user': user.id, 'following': following.id},
-                    context={'request': request}
-                )
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-                follow = Follow.objects.filter(
-                    user=user, following=following).exists()
-                response_data = {
-                    "email": following.email,
-                    "id": following.id,
-                    "username": following.username,
-                    "first_name": following.first_name,
-                    "last_name": following.last_name,
-                    "is_subscribed": follow,
-                    "recipes": [{
-                        "id": recipe.id,
-                        "title": recipe.title,
-                    } for recipe in recipes],
-                    "recipes_count": following.recipes.count(),
-                }
-                return Response(response_data, status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
-            if follow:  # Если подписка есть, то отписываем
-                follow.delete()
-                return Response(
-                    {"detail": "Вы отписались от этого автора."},
-                    status=status.HTTP_204_NO_CONTENT
-                )
-            return Response(
-                {"detail": "Вы уже не подписаны на этого автора."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+
+        serializer = serializers.FollowSerializer(
+            data={'user': user.id, 'following': following.id},
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @subscribe.mapping.delete
+    def unsubscribe(self, request, pk=None):
+        get_object_or_404(
+            Follow,
+            user=request.user,
+            following=get_object_or_404(User, pk=pk)
+        ).delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        methods=['get'],
-        url_path='subscriptions',
+        methods=['GET'],
         permission_classes=(permissions.IsAuthenticated,),
         detail=False,
     )
     def subscriptions(self, request):
-        user = get_object_or_404(
-            User,
-            username=request.user.username
-        )
-        limit = request.query_params.get('limit')
-        following_users = User.objects.filter(
-            following__user=user
-        )
-        if limit:
-            following_users = following_users[:int(limit)]
-        paginator = LimitOffsetPagination()
-        result_page = paginator.paginate_queryset(
-            following_users,
-            request
-        )
-        users_data = []
-        for following_user in result_page:
-            user_recipes_count = following_user.recipes.count()
-            user_data = serializers.FollowGetSerializer(
-                following_user,
-                context={'request': request}
-            ).data
-            user_data['recipes_count'] = user_recipes_count
-            users_data.append(user_data)
+        queryset = User.objects.filter(following__user=request.user)
+        page = self.paginate_queryset(queryset)
 
-        response = {
-            "count": following_users.count(),
-            "next": paginator.get_next_link(),
-            "previous": paginator.get_previous_link(),
-            "results": users_data
-        }
+        serializer = serializers.FollowGetSerializer(
+            page,
+            many=True,
+            context={'request': request}
+        )
 
-        return Response(response)
+        return self.get_paginated_response(serializer.data)
 
 
 class TokenCreateView(views.APIView):
@@ -268,33 +212,6 @@ class RecipeViewSet(
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-    @action(
-        detail=True,
-        methods=['get'],
-        url_path='get-link',
-        url_name='get_link',
-    )
-    def get_short_link(self, request, pk):
-        recipe = get_object_or_404(
-            Recipe,
-            id=pk
-        )
-        recipe_url = recipe.get_absolute_url()
-        short_link, created = ShortLink.objects.get_or_create(
-            full_url=recipe_url,
-            recipe=recipe
-        )
-        if created:
-            short_url = generate_short_url(recipe_url)
-            short_link.short_link = short_url
-            short_link.save()
-        full_url = short_link.full_url
-        message = {'short-link': str(full_url)}
-        return Response(
-            message,
-            status=status.HTTP_200_OK
-        )
 
     @action(
         methods=['post', 'delete'],

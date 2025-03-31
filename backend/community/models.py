@@ -19,7 +19,6 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        ordering = ('id',)
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'following'),
@@ -35,7 +34,7 @@ class Follow(models.Model):
         return f'{self.user} подписан на {self.following}'
 
 
-class Favorite(models.Model):
+class FavoriteShoppingCartMixin(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -48,104 +47,33 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        default_related_name = 'user_favorite'
-        verbose_name = 'Избранное'
-        verbose_name_plural = 'Избранное'
-        ordering = ('id',)
+        abstract = True
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
-                name='unique_favorite',
+                name='%(app_label)s_%(class)s_unique',
             ),
         )
+
+
+class Favorite(FavoriteShoppingCartMixin):
+
+    class Meta(FavoriteShoppingCartMixin.Meta):
+        default_related_name = 'user_favorite'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
     def __str__(self):
         return f'{self.recipe} в избранном у {self.user}'
 
 
-class ShortLink(models.Model):
-    full_url = models.URLField(
-        verbose_name='Полная ссылка',
-        unique=True,
-    )
-    short_link = models.URLField(
-        unique=True,
-    )
-    recipe = models.OneToOneField(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='short_link',
-    )
+class ShoppingCart(FavoriteShoppingCartMixin):
 
-    class Meta:
-        verbose_name = 'Короткая ссылка'
-        verbose_name_plural = 'Короткие ссылки'
-        ordering = ('id',)
-
-    def __str__(self):
-        return self.short_link
-
-
-class ShoppingCart(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-    )
-
-    class Meta:
+    class Meta(FavoriteShoppingCartMixin.Meta):
         default_related_name = 'cart_recipes'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='unique_shopping_cart',
-            ),
-        )
+
 
     def __str__(self):
         return f'Рецепт {self.recipe} в корзине пользователя {self.user}'
-
-
-class UserRecipeRelation(models.Model):
-    RELATIONSHIP_CHOICES = [
-        ('favorite', 'Избранное'),
-        ('shopping_cart', 'Корзина'),
-    ]
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь',
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-    )
-    relationship_type = models.CharField(
-        max_length=20,
-        choices=RELATIONSHIP_CHOICES,
-        verbose_name='Тип взаимосвязи',
-    )
-
-    class Meta:
-        default_related_name = 'user_recipe_relations'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('user', 'recipe', 'relationship_type'),
-                name='unique_user_recipe_relation',
-            ),
-        )
-
-    def __str__(self):
-        relationship = (
-            "избранном" if self.relationship_type == "favorite" else "корзине"
-        )
-        return f'{self.recipe} у {self.user} в {relationship}'

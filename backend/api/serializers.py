@@ -4,7 +4,7 @@ import uuid
 from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.serializers import ImageField
@@ -91,12 +91,18 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed',
             'avatar',
         )
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def get_is_followed(self, following):
-        user = self.context['request'].user
-        return user.is_authenticated and user.following.filter(
-            following=following
-        ).exists()
+        request = self.context.get('request')
+        return (
+            request
+            and request.user.is_authenticated
+            and request.user.follower.filter(
+                following_id=following.id).exists()
+        )
 
 
 class TokenSerializer(serializers.Serializer):
@@ -341,16 +347,20 @@ class FollowSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
-        follower = attrs.get('user')
+        user = attrs.get('user')
         following = attrs.get('following')
-        if follower == following:
+
+        if user == following:
             raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя.'
+                detail='Нельзя подписаться на самого себя.',
+                code=status.HTTP_400_BAD_REQUEST
             )
-        if follower.following.filter(following=following).exists():
+        if user.following.filter(following=following).exists():
             raise serializers.ValidationError(
-                'Вы уже подписаны на этого пользователя.'
+                'Вы уже подписаны на этого пользователя.',
+                code=status.HTTP_400_BAD_REQUEST
             )
+
         return attrs
 
     def to_representation(self, instance):
@@ -393,8 +403,11 @@ class FollowGetSerializer(
 
     def get_is_subscribed(self, user):
         request = self.context.get('request')
-        return (request and request.user.is_authenticated
-                and request.user.following.filter(folowing=user).exists())
+        return (
+            request
+            and request.user.is_authenticated
+            and request.user.follower.filter(folowing_id=user.id).exists()
+        )
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
