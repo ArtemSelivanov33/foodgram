@@ -7,6 +7,7 @@ from rest_framework import permissions, status, views, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
@@ -145,21 +146,45 @@ class UsersViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        methods=['GET'],
+        methods=['get'],
+        url_path='subscriptions',
         permission_classes=(permissions.IsAuthenticated,),
         detail=False,
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(following__user=request.user)
-        page = self.paginate_queryset(queryset)
-
-        serializer = serializers.FollowGetSerializer(
-            page,
-            many=True,
-            context={'request': request}
+        user = get_object_or_404(
+            User,
+            username=request.user.username
         )
+        limit = request.query_params.get('limit')
+        following_users = User.objects.filter(
+            following__user=user
+        )
+        if limit:
+            following_users = following_users[:int(limit)]
+        paginator = LimitOffsetPagination()
+        result_page = paginator.paginate_queryset(
+            following_users,
+            request
+        )
+        users_data = []
+        for following_user in result_page:
+            user_recipes_count = following_user.recipes.count()
+            user_data = serializers.FollowGetSerializer(
+                following_user,
+                context={'request': request}
+            ).data
+            user_data['recipes_count'] = user_recipes_count
+            users_data.append(user_data)
 
-        return self.get_paginated_response(serializer.data)
+        response = {
+            "count": following_users.count(),
+            "next": paginator.get_next_link(),
+            "previous": paginator.get_previous_link(),
+            "results": users_data
+        }
+
+        return Response(response)
 
 
 class TokenCreateView(views.APIView):
