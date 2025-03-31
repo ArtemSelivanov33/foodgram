@@ -1,11 +1,22 @@
 from django.contrib import admin
+from django import forms
+from django.forms import InlineFormSet
 
 from recipes.models import Ingredient, Recipe, Tag, RecipeIngredient
+
+
+class IngredientInlineFormSet(InlineFormSet):
+    def clean(self):
+        super().clean()
+        if not any(form.cleaned_data for form in self.forms):
+            raise forms.ValidationError(
+                'Необходимо добавить хотя бы один ингредиент.')
 
 
 class IngredientInline(admin.TabularInline):
     model = RecipeIngredient
     extra = 1
+    formset = IngredientInlineFormSet
 
 
 @admin.register(Recipe)
