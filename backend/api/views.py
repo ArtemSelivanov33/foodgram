@@ -10,11 +10,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Follow, Favorite, ShoppingCart
+from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-# from api.utils import generate_short_url
+from api.utils import generate_short_url
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
@@ -212,6 +212,33 @@ class RecipeViewSet(
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    @action(
+        detail=True,
+        methods=['get'],
+        url_path='get-link',
+        url_name='get_link',
+    )
+    def get_short_link(self, request, pk):
+        recipe = get_object_or_404(
+            Recipe,
+            id=pk
+        )
+        recipe_url = recipe.get_absolute_url()
+        short_link, created = ShortLink.objects.get_or_create(
+            full_url=recipe_url,
+            recipe=recipe
+        )
+        if created:
+            short_url = generate_short_url(recipe_url)
+            short_link.short_link = short_url
+            short_link.save()
+        full_url = short_link.full_url
+        message = {'short-link': str(full_url)}
+        return Response(
+            message,
+            status=status.HTTP_200_OK
+        )
 
     @action(
         methods=['post', 'delete'],

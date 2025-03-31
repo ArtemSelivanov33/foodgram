@@ -67,6 +67,29 @@ class Favorite(FavoriteShoppingCartMixin):
         return f'{self.recipe} в избранном у {self.user}'
 
 
+class ShortLink(models.Model):
+    full_url = models.URLField(
+        verbose_name='Полная ссылка',
+        unique=True,
+    )
+    short_link = models.URLField(
+        unique=True,
+    )
+    recipe = models.OneToOneField(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='short_link',
+    )
+
+    class Meta:
+        verbose_name = 'Короткая ссылка'
+        verbose_name_plural = 'Короткие ссылки'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.short_link
+
+
 class ShoppingCart(FavoriteShoppingCartMixin):
 
     class Meta(FavoriteShoppingCartMixin.Meta):
