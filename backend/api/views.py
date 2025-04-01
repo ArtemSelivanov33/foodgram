@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Sum
 from django.http import HttpResponse

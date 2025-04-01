@@ -99,7 +99,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
         ordering = ('-created_at',)
 
-    def get_absolute_url(self): 
+    def get_absolute_url(self):
         domain = os.getenv('DOMAIN', 'localhost')
         return f'{domain}/recipes/{self.pk}/'
 
