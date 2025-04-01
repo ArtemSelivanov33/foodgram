@@ -1,3 +1,6 @@
+import os
+from hashlib import blake2b
+
 from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -11,11 +14,12 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from api import serializers
-from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.utils import generate_short_url
+from community.models import Follow, Favorite, ShoppingCart, ShortLink
+from foodgram_backend.constants import DIGEST_SIZE
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
@@ -244,12 +248,22 @@ class RecipeViewSet(
         url_path='get-link',
         url_name='get_link',
     )
+    def generate_short_url(self, url):
+        domain = os.getenv('DOMAIN', 'localhost')
+        base_url = f'https://{domain}/'
+        hash_url = blake2b(url.encode(), digest_size=DIGEST_SIZE).hexdigest()
+        return f'{base_url}{hash_url}'
+
+    def get_absolute_url(self):
+        domain = os.getenv('DOMAIN', 'localhost')
+        return f'{domain}/recipes/{self.pk}/'
+
     def get_short_link(self, request, pk):
         recipe = get_object_or_404(
             Recipe,
             id=pk
         )
-        recipe_url = recipe.get_absolute_url()
+        recipe_url = self.get_absolute_url()
         short_link, created = ShortLink.objects.get_or_create(
             full_url=recipe_url,
             recipe=recipe

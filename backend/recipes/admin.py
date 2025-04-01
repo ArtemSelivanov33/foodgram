@@ -37,10 +37,9 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     filter_horizontal = ('tags',)
 
+    @admin.display(description='Количество добавлений в избранное')
     def favorites_count(self, recipe):
         return recipe.user_favorite.count()
-
-    favorites_count.short_description = 'Количество добавлений в избранное'
 
 
 @admin.register(Tag)
