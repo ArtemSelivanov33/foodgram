@@ -248,7 +248,7 @@ class RecipeViewSet(
     )
     def get_absolute_url(self):
         domain = os.getenv('DOMAIN', 'localhost')
-        return f'{domain}/recipes/{self.pk}/'
+        return f'{domain}/recipes/{Recipe.pk}/'
 
     def get_short_link(self, request, pk):
         recipe = get_object_or_404(
