@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -238,6 +240,10 @@ class RecipeViewSet(
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def get_absolute_url(self, recipe):
+        domain = os.getenv('DOMAIN', 'localhost')
+        return f'{domain}/recipes/{recipe.pk}/'
+
     @action(
         detail=True,
         methods=['get'],
@@ -249,7 +255,7 @@ class RecipeViewSet(
             Recipe,
             id=pk
         )
-        recipe_url = recipe.get_absolute_url()
+        recipe_url = self.get_absolute_url(recipe)
         short_link, created = ShortLink.objects.get_or_create(
             full_url=recipe_url,
             recipe=recipe

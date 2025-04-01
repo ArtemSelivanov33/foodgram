@@ -1,4 +1,4 @@
-import os
+# import os
 
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -99,9 +99,9 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
         ordering = ('-created_at',)
 
-    def get_absolute_url(self):
-        domain = os.getenv('DOMAIN', 'localhost')
-        return f'{domain}/recipes/{self.pk}/'
+    # def get_absolute_url(self):
+    #     domain = os.getenv('DOMAIN', 'localhost')
+    #     return f'{domain}/recipes/{self.pk}/'
 
 
 class RecipeIngredient(models.Model):
