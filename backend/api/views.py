@@ -269,7 +269,7 @@ class RecipeViewSet(
             recipe=recipe
         )
         if created:
-            short_url = generate_short_url(recipe_url)
+            short_url = self.generate_short_url(recipe_url)
             short_link.short_link = short_url
             short_link.save()
         full_url = short_link.full_url
