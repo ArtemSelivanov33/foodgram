@@ -240,16 +240,20 @@ class RecipeViewSet(
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def get_absolute_url(self, request, pk):
+        domain = os.getenv('DOMAIN', 'localhost')
+        recipe = get_object_or_404(
+            Recipe,
+            id=pk
+        )
+        return f'{domain}/recipes/{recipe.pk}/'
+
     @action(
         detail=True,
         methods=['get'],
         url_path='get-link',
         url_name='get_link',
     )
-    def get_absolute_url(self, recipe):
-        domain = os.getenv('DOMAIN', 'localhost')
-        return f'{domain}/recipes/{recipe.pk}/'
-
     def get_short_link(self, request, pk):
         recipe = get_object_or_404(
             Recipe,
