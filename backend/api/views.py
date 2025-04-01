@@ -1,5 +1,4 @@
 import os
-from hashlib import blake2b
 
 from django.contrib.auth import get_user_model, login, logout
 from django.db.models import Sum
@@ -17,9 +16,8 @@ from api import serializers
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-# from api.utils import generate_short_url
+from api.utils import generate_short_url
 from community.models import Follow, Favorite, ShoppingCart, ShortLink
-from foodgram_backend.constants import DIGEST_SIZE
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
@@ -248,12 +246,6 @@ class RecipeViewSet(
         url_path='get-link',
         url_name='get_link',
     )
-    def generate_short_url(self, url):
-        domain = os.getenv('DOMAIN', 'localhost')
-        base_url = f'https://{domain}/'
-        hash_url = blake2b(url.encode(), digest_size=DIGEST_SIZE).hexdigest()
-        return f'{base_url}{hash_url}'
-
     def get_absolute_url(self):
         domain = os.getenv('DOMAIN', 'localhost')
         return f'{domain}/recipes/{self.pk}/'
@@ -269,7 +261,7 @@ class RecipeViewSet(
             recipe=recipe
         )
         if created:
-            short_url = self.generate_short_url(recipe_url)
+            short_url = generate_short_url(recipe_url)
             short_link.short_link = short_url
             short_link.save()
         full_url = short_link.full_url
