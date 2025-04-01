@@ -17,7 +17,7 @@ from api import serializers
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-from api.utils import generate_short_url
+# from api.utils import generate_short_url
 from community.models import Follow, Favorite, ShoppingCart, ShortLink
 from foodgram_backend.constants import DIGEST_SIZE
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
