@@ -1,12 +1,14 @@
 import os
 
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import get_user_model, logout
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from hashlib import blake2b
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import permissions, status, views, viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -190,26 +192,17 @@ class UsersViewSet(
         return Response(response)
 
 
-class TokenCreateView(views.APIView):
-    serializer_class = serializers.TokenSerializer
-    permission_classes = (permissions.AllowAny, )
+class TokenCreateView(ObtainAuthToken):
+    serializer_class = AuthTokenSerializer
+    permission_classes = (permissions.AllowAny,)
 
-    def post(self, request):
-        serializer = serializers.TokenSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = get_object_or_404(
-            User,
-            email=serializer.validated_data.get('email')
-        )
-        token, _ = Token.objects.get_or_create(
-            user=user
-        )
-        login(request, user)
-        message = {'auth_token': str(token.key)}
-        return Response(
-            message,
-            status=status.HTTP_200_OK
-        )
+
+        user = serializer.validated_data['user']
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'auth_token': token.key})
 
 
 class TokenDeleteView(views.APIView):
