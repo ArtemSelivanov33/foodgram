@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
 
 from community.models import Favorite, Follow, ShoppingCart
-from castom_image_field import Base64ImageField
+from api.castom_image_field import Base64ImageField
 from foodgram_backend import constants
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
