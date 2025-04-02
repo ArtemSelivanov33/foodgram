@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from hashlib import blake2b
 from rest_framework import permissions, status, views, viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -191,11 +190,12 @@ class UsersViewSet(
         return Response(response)
 
 
-class TokenCreateView(ObtainAuthToken):
+class TokenCreateView(views.APIView):
+    serializer_class = serializers.TokenSerializer
     permission_classes = (permissions.AllowAny, )
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = serializers.TokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(
             User,

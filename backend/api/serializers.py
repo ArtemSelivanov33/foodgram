@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers, status
-# from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
 
 from api.castom_field import Base64ImageField
@@ -87,24 +87,24 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
-# class TokenSerializer(serializers.Serializer):
-#     email = serializers.EmailField(
-#         required=True,
-#     )
-#     password = serializers.CharField(
-#         required=True
-#     )
+class TokenSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True,
+    )
+    password = serializers.CharField(
+        required=True
+    )
 
-#     def validate(self, attrs):
-#         user = get_object_or_404(
-#             User,
-#             email=attrs.get('email')
-#         )
-#         if user.password != attrs.get('password'):
-#             raise serializers.ValidationError(
-#                 'Неверный пароль.'
-#             )
-#         return attrs
+    def validate(self, attrs):
+        user = get_object_or_404(
+            User,
+            email=attrs.get('email')
+        )
+        if user.password != attrs.get('password'):
+            raise serializers.ValidationError(
+                'Неверный пароль.'
+            )
+        return attrs
 
 
 class AvatarSerializer(serializers.ModelSerializer):
