@@ -1,12 +1,11 @@
 import os
 
-from django.contrib.auth import get_user_model, logout
+from django.contrib.auth import get_user_model, logout, authenticate
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from hashlib import blake2b
-from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework import permissions, status, views, viewsets
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -193,16 +192,31 @@ class UsersViewSet(
 
 
 class TokenCreateView(ObtainAuthToken):
-    serializer_class = AuthTokenSerializer
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        # Получаем email и пароль из запроса
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-        user = serializer.validated_data['user']
+        if email is None or password is None:
+            return Response(
+                {'': 'Email и пароль обязательны.'},
+                status=400
+            )
+
+        # Аутентификация пользователя по email и паролю
+        user = authenticate(request=request, email=email, password=password)
+
+        if user is None:
+            return Response(
+                {'': 'Неверный email или пароль.'},
+                status=401
+            )
+
+        # Генерация или получение токена
         token, _ = Token.objects.get_or_create(user=user)
-        return Response({'auth_token': token.key})
+        return Response({'auth_token': token.key}, status=200)
 
 
 class TokenDeleteView(views.APIView):
