@@ -173,7 +173,7 @@ class UsersViewSet(
         users_data = []
         for following_user in result_page:
             user_recipes = following_user.recipes.all().order_by('-id')
-            user_recipes_count = user_recipes.count()
+            user_recipes_count = following_user.recipes.count()
             last_three_recipes = user_recipes[:3]
 
             user_data = serializers.FollowGetSerializer(
