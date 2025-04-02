@@ -1,41 +1,27 @@
-import base64
-import uuid
-
-from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
-from rest_framework.serializers import ImageField
 
 from community.models import Favorite, Follow, ShoppingCart
+from castom_image_field import Base64ImageField
 from foodgram_backend import constants
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 User = get_user_model()
 
 
-class Base64ImageField(ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, image = data.split(';base64,')
-            data = ContentFile(
-                base64.b64decode(image), name=f'{uuid.uuid4()}.jpg'
-            )
-        return super().to_internal_value(data)
-
-
 class UserCreateSerializer(serializers.ModelSerializer):
 
-    first_name = serializers.CharField(
-        max_length=150,
-        required=True,
-    )
-    last_name = serializers.CharField(
-        max_length=150,
-        required=True,
-    )
+    # first_name = serializers.CharField(
+    #     max_length=150,
+    #     required=True,
+    # )
+    # last_name = serializers.CharField(
+    #     max_length=150,
+    #     required=True,
+    # )
     password = serializers.CharField(
         required=True,
         write_only=True,
@@ -52,24 +38,31 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'password',
         )
 
+    def validate_username(self, value):
+        if "me" in value.lower():
+            raise serializers.ValidationError(
+                "Username не может содержать 'me'."
+            )
+        return value
+
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
         user.save()
         return user
 
     def validate(self, attrs):
-        excluded_attrs = {
-            'first_name',
-            'last_name',
-            'password',
-        }
-        for name, value in attrs.items():
-            if name in excluded_attrs:
-                continue
-            if User.objects.filter(**{name: value}).exists():
-                raise serializers.ValidationError(
-                    f'Пользователь с таким {name} уже существует.'
-                )
+        username = attrs.get('username')
+        if username and User.objects.filter(username=username).exists():
+            raise serializers.ValidationError(
+                'Пользователь с таким username уже существует.'
+            )
+
+        email = attrs.get('email')
+        if email and User.objects.filter(email=email).exists():
+            raise serializers.ValidationError(
+                'Пользователь с таким email уже существует.'
+            )
+
         return attrs
 
 
