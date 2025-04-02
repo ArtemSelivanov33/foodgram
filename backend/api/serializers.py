@@ -4,8 +4,8 @@ from rest_framework import serializers, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueTogetherValidator
 
+from api.castom_field import Base64ImageField
 from community.models import Favorite, Follow, ShoppingCart
-from api.castom_image_field import Base64ImageField
 from foodgram_backend import constants
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
@@ -14,14 +14,6 @@ User = get_user_model()
 
 class UserCreateSerializer(serializers.ModelSerializer):
 
-    # first_name = serializers.CharField(
-    #     max_length=150,
-    #     required=True,
-    # )
-    # last_name = serializers.CharField(
-    #     max_length=150,
-    #     required=True,
-    # )
     password = serializers.CharField(
         required=True,
         write_only=True,
@@ -71,7 +63,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         method_name='get_is_followed'
     )
-    avatar = Base64ImageField()
+    avatar = serializers.ImageField()
 
     class Meta:
         model = User
@@ -84,9 +76,6 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed',
             'avatar',
         )
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
 
     def get_is_followed(self, following):
         request = self.context.get('request')
@@ -98,24 +87,24 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
-class TokenSerializer(serializers.Serializer):
-    email = serializers.EmailField(
-        required=True,
-    )
-    password = serializers.CharField(
-        required=True
-    )
+# class TokenSerializer(serializers.Serializer):
+#     email = serializers.EmailField(
+#         required=True,
+#     )
+#     password = serializers.CharField(
+#         required=True
+#     )
 
-    def validate(self, attrs):
-        user = get_object_or_404(
-            User,
-            email=attrs.get('email')
-        )
-        if user.password != attrs.get('password'):
-            raise serializers.ValidationError(
-                'Неверный пароль.'
-            )
-        return attrs
+#     def validate(self, attrs):
+#         user = get_object_or_404(
+#             User,
+#             email=attrs.get('email')
+#         )
+#         if user.password != attrs.get('password'):
+#             raise serializers.ValidationError(
+#                 'Неверный пароль.'
+#             )
+#         return attrs
 
 
 class AvatarSerializer(serializers.ModelSerializer):
