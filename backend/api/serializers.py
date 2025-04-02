@@ -415,14 +415,16 @@ class FollowGetSerializer(
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context['request']
+        recipes_limit = request.query_params.get('recipes_limit')
         recipes = instance.recipes.all()
+        if recipes_limit and recipes_limit.isdigit():
+            recipes = recipes[:int(recipes_limit)]
         representation['recipes'] = RecipeShortSerializer(
             recipes,
             many=True,
             context={'request': request}
         ).data
         representation['recipes_count'] = recipes.count()
-
         return representation
 
 
