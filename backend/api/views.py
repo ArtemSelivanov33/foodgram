@@ -225,9 +225,7 @@ class TokenDeleteView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RecipeViewSet(
-    viewsets.ModelViewSet
-):
+class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
@@ -343,13 +341,7 @@ class RecipeViewSet(
         ] = 'attachment; file_name="shopping_list.txt'
         return response
 
-    def add_recipe_to_favorites_or_cart(
-            self,
-            request,
-            serializer,
-            model,
-            pk
-    ):
+    def add_recipe_to_favorites_or_cart(self, request, serializer, model, pk):
         recipe = get_object_or_404(
             Recipe,
             id=pk

@@ -255,43 +255,32 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
         return value
 
-    # def validate(self, attrs):
-    #     tags = attrs.get('tags')
-    #     ingredients = attrs.get('recipe_ingredients')
-    #     for field in (tags, ingredients):
-    #         if not field:
-    #             raise serializers.ValidationError(
-    #                 f'Отсутсвует обязательное поле {field}'
-    #             )
-    #     ingredients_id = [
-    #         ingredient['ingredient'].id for ingredient in ingredients
-    #     ]
-    #     if len(tags) != len(set(tags)):
-    #         raise serializers.ValidationError(
-    #             'Теги не могут повторяться'
-    #         )
-    #     if len(ingredients_id) != len(set(ingredients_id)):
-    #         raise serializers.ValidationError(
-    #             'Ингредиенты не могут повторяться'
-    #         )
-    #     return attrs
-
     def add_update_recipe_ingredients(self, value, recipe=None):
         ingredients = value.pop('recipe_ingredients')
         tags = value.pop('tags')
+
         if not recipe:
-            recipe = Recipe.objects.create(**value)
-        recipe.recipe_ingredients.all().delete()
-        recipe.tags.clear()
-        recipe_ingredients = (
+            recipe = self.create_recipe(value)  # Метод для создания рецепта
+
+        self.update_recipe_ingredients(recipe, ingredients)
+        recipe.tags.set(tags)  # Установка тегов
+
+        return recipe, value
+
+    def create_recipe(self, value):
+        """Метод для создания нового рецепта."""
+        return Recipe.objects.create(**value)
+
+    def update_recipe_ingredients(self, recipe, ingredients):
+        """Метод для обновления ингредиентов рецепта."""
+        recipe.recipe_ingredients.all().delete()  # Удаляем старые ингредиенты
+        recipe_ingredients = [
             RecipeIngredient(
                 recipe=recipe,
                 **ingredient
             ) for ingredient in ingredients
-        )
+        ]
         RecipeIngredient.objects.bulk_create(recipe_ingredients)
-        recipe.tags.set(tags)
-        return recipe, value
 
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
