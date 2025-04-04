@@ -256,30 +256,32 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create_ingredients(self, ingredients, recipe):
-        for ingredient in ingredients:
-            RecipeIngredient.objects.create(
+        RecipeIngredient.objects.bulk_create(
+            [RecipeIngredient(
+                ingredient=Ingredient.objects.get(id=ingredient['id']),
                 recipe=recipe,
-                ingredient_id=ingredient.get('id'),
-                amount=ingredient.get('amount'), )
+                amount=ingredient['amount']
+            ) for ingredient in ingredients]
+        )
 
-    def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+    def create(self, value):
+        ingredients = value.pop('recipe_ingredients')
+        tags = value.pop('tags')
+        recipe = Recipe.objects.create(**value)
         recipe.tags.set(tags)
-        self.create_ingredients(ingredients, recipe)
+        self.create_ingredients(ingredients=ingredients, recipe=recipe)
         return recipe
 
-    def update(self, instance, validated_data):
-        if 'ingredients' in validated_data:
-            ingredients = validated_data.pop('ingredients')
+    def update(self, instance, value):
+        if 'ingredients' in value:
+            ingredients = value.pop('ingredients')
             instance.ingredients.clear()
             self.create_ingredients(ingredients, instance)
-        if 'tags' in validated_data:
+        if 'tags' in value:
             instance.tags.set(
-                validated_data.pop('tags'))
+                value.pop('tags'))
         return super().update(
-            instance, validated_data)
+            instance, value)
 
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
