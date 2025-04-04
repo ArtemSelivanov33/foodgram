@@ -263,12 +263,12 @@ def add_update_recipe_ingredients(self, value, recipe=None):
         recipe = Recipe.objects.create(**value)
     recipe.recipe_ingredients.all().delete()
     recipe.tags.clear()
-    recipe_ingredients = (
+    recipe_ingredients = [
         RecipeIngredient(
             recipe=recipe,
             **ingredient
         ) for ingredient in ingredients
-    )
+    ]
     RecipeIngredient.objects.bulk_create(recipe_ingredients)
     recipe.tags.set(tags)
     return recipe, value
