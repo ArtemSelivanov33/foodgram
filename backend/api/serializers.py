@@ -255,23 +255,22 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
         return value
 
-
-def add_update_recipe_ingredients(self, value, recipe=None):
-    ingredients = value.pop('recipe_ingredients')
-    tags = value.pop('tags')
-    if not recipe:
-        recipe = Recipe.objects.create(**value)
-    recipe.recipe_ingredients.all().delete()
-    recipe.tags.clear()
-    recipe_ingredients = [
-        RecipeIngredient(
-            recipe=recipe,
-            **ingredient
-        ) for ingredient in ingredients
-    ]
-    RecipeIngredient.objects.bulk_create(recipe_ingredients)
-    recipe.tags.set(tags)
-    return recipe, value
+    def add_update_recipe_ingredients(self, value, recipe=None):
+        ingredients = value.pop('recipe_ingredients')
+        tags = value.pop('tags')
+        if not recipe:
+            recipe = Recipe.objects.create(**value)
+        recipe.recipe_ingredients.all().delete()
+        recipe.tags.clear()
+        recipe_ingredients = [
+            RecipeIngredient(
+                recipe=recipe,
+                **ingredient
+            ) for ingredient in ingredients
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
+        recipe.tags.set(tags)
+        return recipe, value
 
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
