@@ -100,7 +100,9 @@ class UserSerializer(serializers.ModelSerializer):
         return (
             request
             and request.user.is_authenticated
-            and request.user.follower.filter(following_id=following.id).exists()
+            and request.user.follower.filter(
+                following_id=following.id
+            ).exists()
         )
 
 
