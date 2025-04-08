@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
-from users.validators import validate_username_me
+from api.validators import validate_username
 from foodgram_backend import constants
 
 
@@ -11,7 +11,7 @@ class User(AbstractUser):
         verbose_name='username',
         max_length=constants.USERNAME_LENGTH,
         unique=True,
-        validators=(UnicodeUsernameValidator(), validate_username_me)
+        validators=(UnicodeUsernameValidator(),)
     )
     email = models.EmailField(
         verbose_name='email',
@@ -32,6 +32,7 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         ordering = ('username',)
+
 
     def __str__(self):
         return self.username[:constants.USERNAME_CUT]

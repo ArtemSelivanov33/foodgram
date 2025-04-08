@@ -1,5 +1,7 @@
 ADDITIONAL_USER_FIELDS = ((None, {'fields': ('avatar',)}),)
 
+REGEX_USERNAME = r'^[\w.@+-]+\Z'
+
 AMOUNT_MIN = 1
 
 AMOUNT_MAX = 32000
