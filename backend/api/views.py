@@ -186,7 +186,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def remove_from_shopping_cart(self, request, pk=None):
         return self._remove_recipe_mixin(request, ShoppingCart, pk)
 
-
     @action(
         methods=['get'],
         url_path='download_shopping_cart',
@@ -258,6 +257,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class IngredientsViewSet(
     viewsets.ReadOnlyModelViewSet

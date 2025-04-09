@@ -246,6 +246,7 @@ class FollowSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(),
         source='following'
     )
+
     class Meta:
         model = Follow
         fields = (
