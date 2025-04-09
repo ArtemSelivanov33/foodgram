@@ -1,10 +1,10 @@
-import os
-
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from foodgram_backend import constants
-from users.models import User
+
+User = get_user_model()
 
 
 class Tag(models.Model):
@@ -40,10 +40,12 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        constraints = (models.UniqueConstraint(
-            fields=['name', 'measurement_unit'],
-            name='ingredients_uniques'
-        ),)
+        constraints = (
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='ingredients_uniques'
+            ),
+        )
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}.'
@@ -95,10 +97,6 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
         ordering = ('-created_at',)
 
-    def get_absolute_url(self):
-        domain = os.getenv('DOMAIN', 'localhost')
-        return f'{domain}/recipes/{self.pk}/'
-
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
@@ -126,7 +124,7 @@ class RecipeIngredient(models.Model):
         verbose_name_plural = 'Ингредиенты рецепта'
         constraints = (
             models.UniqueConstraint(
-                fields=('recipe', 'ingredient'),
+                fields=('ingredient', 'recipe'),
                 name='unique_recipe_ingredient',
             ),
         )
