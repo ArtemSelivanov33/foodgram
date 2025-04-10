@@ -160,6 +160,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_to_favorite(self, request, pk=None):
         return self._add_recipe_mixin(
+            request=request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
         )
@@ -172,6 +173,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_to_shopping_cart(self, request, pk=None):
         return self._add_recipe_mixin(
+            request=request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
         )
