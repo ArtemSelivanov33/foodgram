@@ -160,7 +160,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_to_favorite(self, request, pk=None):
         return self._add_recipe_mixin(
-            request=request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
         )
@@ -173,7 +172,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_to_shopping_cart(self, request, pk=None):
         return self._add_recipe_mixin(
-            request=request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
         )
@@ -201,8 +199,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'ingredient__measurement_unit'
             ).annotate(total_amount=Sum('amount')).order_by('ingredient__name')
         )
-        shopping_list = self.prepare_recipes(shopping_cart_ingredients)
-        return self.shop_list(shopping_list)
+        shopping_list = self._prepare_recipes(shopping_cart_ingredients)
+        return self.forming_shopping_list(shopping_list)
 
     def _prepare_recipes(self, ingredients):
         shopping_list = []
@@ -214,7 +212,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         shopping_list_text = '\n'.join(shopping_list)
         return shopping_list_text
 
-    def shop_list(self, shop_list_text):
+    def forming_shopping_list(self, shop_list_text):
         response = HttpResponse(
             shop_list_text,
             content_type='text/plain',

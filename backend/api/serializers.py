@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         read_only=True,
     )
-    avatar = Base64ImageField()
+    avatar = serializers.ImageField()
 
     class Meta:
         model = User
@@ -146,36 +146,39 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             }
         ).data
 
-    def validate(self, attrs):
-        tags = attrs.get('tags')
-        ingredients = attrs.get('ingredients')
-        for field in (tags, ingredients):
-            if not field:
-                raise serializers.ValidationError(
-                    f'Отсутсвует обязательное поле {field}'
-                )
-        ingredients_id = [
-            ingredient['id'].id for ingredient in ingredients
-        ]
-        if len(tags) != len(set(tags)):
+    def validate_tags(self, value):
+
+        if not value:
             raise serializers.ValidationError(
-                'Теги не могут повторяться'
+                'Обязательное поле "tags" отсутствует.'
             )
-        if len(ingredients_id) != len(set(ingredients_id)):
+
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError('Теги не могут повторяться.')
+        return value
+
+    def validate_ingredients(self, value):
+
+        if not value:
             raise serializers.ValidationError(
-                'Ингредиенты не могут повторяться'
+                'Обязательное поле "ingredients" отсутствует.'
             )
-        return attrs
+
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError(
+                'Ингредиенты не могут повторяться.'
+            )
+        return value
 
     def _add_recipe_ingredients(self, instance, ingredients):
-        values = [
+        values = (
             RecipeIngredient(
                 recipe=instance,
                 ingredient=item.get('id'),
                 amount=item.get('amount'),
             )
             for item in ingredients
-        ]
+        )
         RecipeIngredient.objects.bulk_create(values)
 
 
