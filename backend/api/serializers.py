@@ -14,7 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         read_only=True,
     )
-    avatar = Base64ImageField()
 
     class Meta:
         model = User
@@ -168,7 +167,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def _add_recipe_ingredients(self, instance, ingredients):
-        values = (
+        RecipeIngredient.objects.bulk_create(
             RecipeIngredient(
                 recipe=instance,
                 ingredient=item.get('id'),
@@ -176,7 +175,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
             for item in ingredients
         )
-        RecipeIngredient.objects.bulk_create(values)
 
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
@@ -324,7 +322,6 @@ class FollowGetSerializer(UserSerializer):
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField()
 
     class Meta:
         model = Recipe
