@@ -326,6 +326,7 @@ class FollowGetSerializer(UserSerializer):
 
 
 class RecipeShortSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
 
     class Meta:
         model = Recipe
