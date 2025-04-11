@@ -157,9 +157,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path='favorite',
         detail=True,
     )
-    def add_to_favorite(self, request, pk=None):
+    def add_to_favorite(self, pk=None):
         return self._add_recipe(
-            request=request,
+            request=self.request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
         )
@@ -170,20 +170,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         permission_classes=(permissions.IsAuthenticated, )
     )
-    def add_to_shopping_cart(self, request, pk=None):
+    def add_to_shopping_cart(self, pk=None):
         return self._add_recipe(
-            request=request,
+            request=self.request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
         )
 
     @add_to_favorite.mapping.delete
-    def remove_from_favorite(self, request, pk=None):
-        return self._remove_recipe(request, Favorite, pk)
+    def remove_from_favorite(self, pk=None):
+        return self._remove_recipe(self.request, Favorite, pk)
 
     @add_to_shopping_cart.mapping.delete
-    def remove_from_shopping_cart(self, request, pk=None):
-        return self._remove_recipe(request, ShoppingCart, pk)
+    def remove_from_shopping_cart(self, pk=None):
+        return self._remove_recipe(self.request, ShoppingCart, pk)
 
     @action(
         methods=['get'],
