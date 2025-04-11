@@ -28,7 +28,6 @@ class UsersViewSet(BaseUserViewSet):
     serializer_class = serializers.UserSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    pagination_class = CustomPagination
 
     def get_permissions(self):
         if self.action == 'me':
@@ -159,7 +158,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
     )
     def add_to_favorite(self, request, pk=None):
-        return self._add_recipe_mixin(
+        return self._add_recipe(
             request=request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
@@ -172,7 +171,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(permissions.IsAuthenticated, )
     )
     def add_to_shopping_cart(self, request, pk=None):
-        return self._add_recipe_mixin(
+        return self._add_recipe(
             request=request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
@@ -180,11 +179,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @add_to_favorite.mapping.delete
     def remove_from_favorite(self, request, pk=None):
-        return self._remove_recipe_mixin(request, Favorite, pk)
+        return self._remove_recipe(request, Favorite, pk)
 
     @add_to_shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, pk=None):
-        return self._remove_recipe_mixin(request, ShoppingCart, pk)
+        return self._remove_recipe(request, ShoppingCart, pk)
 
     @action(
         methods=['get'],
@@ -224,12 +223,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ] = 'attachment; file_name="shopping_list.txt'
         return response
 
-    def _add_recipe_mixin(self, request, serializer_class, pk):
+    def _add_recipe(self, serializer_class, pk):
         serializer = serializer_class(
             data={
                 'recipe': get_object_or_404(Recipe, id=pk).id,
-                'user': request.user.id,
-                'context': {'request': request}
+                'user': self.request.user.id,
+                'context': {'request': self.request}
             }
         )
 
@@ -240,14 +239,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-    def _remove_recipe_mixin(self, request, model, pk):
-        pass
+    def _remove_recipe(self, model, pk):
         recipe = get_object_or_404(
             Recipe,
             id=pk
         )
         recipe = model.objects.filter(
-            user=request.user,
+            user=self.request.user,
             recipe=recipe
         )
         if not recipe.exists():
@@ -259,9 +257,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class IngredientsViewSet(
-    viewsets.ReadOnlyModelViewSet
-):
+class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientsSerializer
     filter_backends = (DjangoFilterBackend,)
@@ -269,9 +265,7 @@ class IngredientsViewSet(
     pagination_class = None
 
 
-class TagsViewSet(
-    viewsets.ReadOnlyModelViewSet
-):
+class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
     pagination_class = None
