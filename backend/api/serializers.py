@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
         read_only=True,
     )
+    image = serializers.ImageField()
 
     class Meta:
         model = User
