@@ -171,7 +171,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return value
 
     def _add_recipe_ingredients(self, instance, ingredients):
-        RecipeIngredient.objects.bulk_create(
+        values = (
             RecipeIngredient(
                 recipe=instance,
                 ingredient=item.get('id'),
@@ -179,6 +179,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
             for item in ingredients
         )
+        RecipeIngredient.objects.bulk_create(values)
 
 
 class RecipeDetailSerializer(serializers.ModelSerializer):
