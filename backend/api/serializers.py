@@ -168,14 +168,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def _add_recipe_ingredients(self, instance, ingredients):
-        values = [
+        values = (
             RecipeIngredient(
                 recipe=instance,
                 ingredient=item.get('id'),
                 amount=item.get('amount'),
             )
             for item in ingredients
-        ]
+        )
         RecipeIngredient.objects.bulk_create(values)
 
 
