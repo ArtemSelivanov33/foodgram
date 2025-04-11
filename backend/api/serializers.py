@@ -179,6 +179,20 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_ingredients(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                "Отсутствует обязательное поле 'ingredients'"
+            )
+
+        ingredients_id = [ingredient['id'].id for ingredient in value]
+        if len(ingredients_id) != len(set(ingredients_id)):
+            raise serializers.ValidationError(
+                "Ингредиенты не могут повторяться"
+            )
+
+        return value
+
     def _add_recipe_ingredients(self, instance, ingredients):
         RecipeIngredient.objects.bulk_create(
             RecipeIngredient(
