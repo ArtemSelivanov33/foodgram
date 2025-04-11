@@ -157,9 +157,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path='favorite',
         detail=True,
     )
-    def add_to_favorite(self, pk=None):
+    def add_to_favorite(self, request, pk=None):
         return self._add_recipe(
-            request=self.request,
+            request=request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
         )
@@ -170,20 +170,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         permission_classes=(permissions.IsAuthenticated, )
     )
-    def add_to_shopping_cart(self, pk=None):
+    def add_to_shopping_cart(self, request, pk=None):
         return self._add_recipe(
-            request=self.request,
+            request=request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
         )
 
     @add_to_favorite.mapping.delete
-    def remove_from_favorite(self, pk=None):
-        return self._remove_recipe(self.request, Favorite, pk)
+    def remove_from_favorite(self, request, pk=None):
+        return self._remove_recipe(request, Favorite, pk)
 
     @add_to_shopping_cart.mapping.delete
-    def remove_from_shopping_cart(self, pk=None):
-        return self._remove_recipe(self.request, ShoppingCart, pk)
+    def remove_from_shopping_cart(self, request, pk=None):
+        return self._remove_recipe(request, ShoppingCart, pk)
 
     @action(
         methods=['get'],
@@ -223,12 +223,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ] = 'attachment; file_name="shopping_list.txt'
         return response
 
-    def _add_recipe(self, serializer_class, pk):
+    def _add_recipe(self, request, serializer_class, pk):
         serializer = serializer_class(
             data={
                 'recipe': get_object_or_404(Recipe, id=pk).id,
-                'user': self.request.user.id,
-                'context': {'request': self.request}
+                'user': request.user.id,
+                'context': {'request': request}
             }
         )
 
@@ -239,13 +239,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-    def _remove_recipe(self, model, pk):
+    def _remove_recipe(self, request, model, pk):
         recipe = get_object_or_404(
             Recipe,
             id=pk
         )
         recipe = model.objects.filter(
-            user=self.request.user,
+            user=request.user,
             recipe=recipe
         )
         if not recipe.exists():
