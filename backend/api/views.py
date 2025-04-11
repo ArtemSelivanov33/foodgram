@@ -157,9 +157,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path='favorite',
         detail=True,
     )
-    def add_to_favorite(self, request, pk=None):
+    def add_to_favorite(self, pk=None):
         return self._add_recipe(
-            request=request,
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
         )
@@ -223,12 +222,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ] = 'attachment; file_name="shopping_list.txt'
         return response
 
-    def _add_recipe(self, request, serializer_class, pk):
+    def _add_recipe(self, serializer_class, pk):
         serializer = serializer_class(
             data={
                 'recipe': get_object_or_404(Recipe, id=pk).id,
-                'user': request.user.id,
-                'context': {'request': request}
+                'user': self.request.user.id,
+                'context': {'request': self.request}
             }
         )
 
