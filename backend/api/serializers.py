@@ -145,26 +145,39 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             }
         ).data
 
-    def validate(self, attrs):
-        tags = attrs.get('tags')
-        ingredients = attrs.get('ingredients')
-        for field in (tags, ingredients):
-            if not field:
-                raise serializers.ValidationError(
-                    f'Отсутсвует обязательное поле {field}'
-                )
-        ingredients_id = [
-            ingredient['id'].id for ingredient in ingredients
-        ]
-        if len(tags) != len(set(tags)):
+    # def validate(self, attrs):
+    #     tags = attrs.get('tags')
+    #     ingredients = attrs.get('ingredients')
+    #     for field in (tags, ingredients):
+    #         if not field:
+    #             raise serializers.ValidationError(
+    #                 f'Отсутсвует обязательное поле {field}'
+    #             )
+    #     ingredients_id = [
+    #         ingredient['id'].id for ingredient in ingredients
+    #     ]
+    #     if len(tags) != len(set(tags)):
+    #         raise serializers.ValidationError(
+    #             'Теги не могут повторяться'
+    #         )
+    #     if len(ingredients_id) != len(set(ingredients_id)):
+    #         raise serializers.ValidationError(
+    #             'Ингредиенты не могут повторяться'
+    #         )
+    #     return attrs
+
+    def validate_tags(self, value):
+        if not value:
             raise serializers.ValidationError(
-                'Теги не могут повторяться'
+                "Отсутствует обязательное поле 'tags'"
             )
-        if len(ingredients_id) != len(set(ingredients_id)):
+
+        if len(value) != len(set(value)):
             raise serializers.ValidationError(
-                'Ингредиенты не могут повторяться'
+                "Теги не могут повторяться"
             )
-        return attrs
+
+        return value
 
     def _add_recipe_ingredients(self, instance, ingredients):
         RecipeIngredient.objects.bulk_create(
