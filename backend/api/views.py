@@ -246,6 +246,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def perform_create(self, serializer):
+        validated_data, ingredients, tags = serializer.create(
+            serializer.validated_data
+        )
+        validated_data['author'] = self.request.user
+        recipe = Recipe.objects.create(**validated_data)
+        serializer._add_recipe_ingredients(recipe, ingredients)
+        recipe.tags.set(tags)
+        return recipe
+
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()

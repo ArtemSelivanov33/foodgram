@@ -115,16 +115,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
-    def create(self, value):
-        ingredients = value.pop('ingredients')
-        tags = value.pop('tags')
-
-        value['author'] = self.context.get('request').user
-        recipe = Recipe.objects.create(**value)
-        self._add_recipe_ingredients(recipe, ingredients)
-        recipe.tags.set(tags)
-
-        return recipe
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        return validated_data, ingredients, tags
 
     def update(self, recipe, value):
         ingredients = value.pop('ingredients')
@@ -144,27 +138,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'request': self.context.get('request'),
             }
         ).data
-
-    # def validate(self, attrs):
-    #     tags = attrs.get('tags')
-    #     ingredients = attrs.get('ingredients')
-    #     for field in (tags, ingredients):
-    #         if not field:
-    #             raise serializers.ValidationError(
-    #                 f'Отсутсвует обязательное поле {field}'
-    #             )
-    #     ingredients_id = [
-    #         ingredient['id'].id for ingredient in ingredients
-    #     ]
-    #     if len(tags) != len(set(tags)):
-    #         raise serializers.ValidationError(
-    #             'Теги не могут повторяться'
-    #         )
-    #     if len(ingredients_id) != len(set(ingredients_id)):
-    #         raise serializers.ValidationError(
-    #             'Ингредиенты не могут повторяться'
-    #         )
-    #     return attrs
 
     def validate_tags(self, value):
         if not value:
