@@ -146,20 +146,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def get_short_link(self, request, pk):
         domain = os.getenv('DOMAIN', 'localhost')
-        recipe = get_object_or_404(
-            Recipe,
-            id=pk
-        )
+        recipe = get_object_or_404(Recipe, id=pk)
         recipe_url = f'{domain}/recipes/{recipe.pk}/'
-        short_link, created = ShortLink.objects.get_or_create(
+        short_link = self.generate_short_url(recipe_url)
+        short_link_obj, created = ShortLink.objects.get_or_create(
             full_url=recipe_url,
-            recipe=recipe
+            defaults={'short_link': short_link, 'recipe': recipe}
         )
-        if created:
-            short_link.short_link = self.generate_short_url(recipe_url)
-            short_link.save()
         return Response(
-            {'short-link': str(short_link.full_url)},
+            {'short-link': str(short_link_obj.short_link)},
             status=status.HTTP_200_OK
         )
 
