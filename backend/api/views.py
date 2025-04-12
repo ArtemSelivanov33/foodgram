@@ -171,7 +171,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def add_to_shopping_cart(self, request, pk=None):
         return self._add_recipe(
-            request=request,
             serializer_class=serializers.ShoppingCartSerializer,
             pk=pk
         )
@@ -238,13 +237,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
-    def _remove_recipe(self, request, model, pk):
+    def _remove_recipe(self, model, pk):
         recipe = get_object_or_404(
             Recipe,
             id=pk
         )
         recipe = model.objects.filter(
-            user=request.user,
+            user=self.request.user,
             recipe=recipe
         )
         if not recipe.exists():
