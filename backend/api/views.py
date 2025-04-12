@@ -94,15 +94,23 @@ class UsersViewSet(BaseUserViewSet):
         detail=False,
     )
     def subscriptions(self, request):
-        following_users = User.objects.filter(
-            following__user=request.user
+        following_users = self.get_following_users(request)
+        serializer = self.get_following_users_serializer(
+            following_users, request
         )
-        serializer = serializers.FollowGetSerializer(
+        return self.get_paginated_response(serializer.data)
+
+    def get_following_users(self, request):
+        """Метод для получения queryset подписок пользователя."""
+        return User.objects.filter(following__user=request.user)
+
+    def get_following_users_serializer(self, following_users, request):
+        """Метод для получения сериализатора."""
+        return serializers.FollowGetSerializer(
             self.paginate_queryset(following_users),
             context={'request': request},
             many=True,
         )
-        return self.get_paginated_response(serializer.data)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
