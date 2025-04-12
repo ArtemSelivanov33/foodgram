@@ -119,7 +119,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients = value.pop('ingredients')
         tags = value.pop('tags')
 
-        value['author'] = self.context.get('request').user
         recipe = Recipe.objects.create(**value)
         self._add_recipe_ingredients(recipe, ingredients)
         recipe.tags.set(tags)
