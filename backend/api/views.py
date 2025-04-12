@@ -154,7 +154,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             defaults={'short_link': short_link, 'recipe': recipe}
         )
         return Response(
-            {'short-link': str(short_link_obj.short_link)},
+            {'short-link': str(short_link_obj.full_url)},
             status=status.HTTP_200_OK
         )
 
