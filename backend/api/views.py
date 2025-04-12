@@ -177,11 +177,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @add_to_favorite.mapping.delete
     def remove_from_favorite(self, request, pk=None):
-        return self._remove_recipe(request, Favorite, pk)
+        return self._remove_recipe(Favorite, pk)
 
     @add_to_shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, pk=None):
-        return self._remove_recipe(request, ShoppingCart, pk)
+        return self._remove_recipe(ShoppingCart, pk)
 
     @action(
         methods=['get'],
