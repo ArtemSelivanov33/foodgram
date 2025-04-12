@@ -238,20 +238,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def _remove_recipe(self, model, pk):
-        recipe = get_object_or_404(
-            Recipe,
-            id=pk
-        )
-        recipe = model.objects.filter(
+        get_object_or_404(
+            model,
             user=self.request.user,
-            recipe=recipe
-        )
-        if not recipe.exists():
-            return Response(
-                {'error': 'Рецепт не найден'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        recipe.delete()
+            recipe=get_object_or_404(Recipe, id=pk)
+        ).delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
