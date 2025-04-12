@@ -157,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path='favorite',
         detail=True,
     )
-    def add_to_favorite(self, pk=None):
+    def add_to_favorite(self, request, pk=None):
         return self._add_recipe(
             serializer_class=serializers.FavoriteSerializer,
             pk=pk
