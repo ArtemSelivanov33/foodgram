@@ -109,7 +109,7 @@ class UsersViewSet(BaseUserViewSet):
     #         context={'request': request},
     #         many=True,
     #     )
-    def list(self, request):
+    def subscriptions(self, request):
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -122,6 +122,9 @@ class UsersViewSet(BaseUserViewSet):
 
     def get_queryset(self):
         return User.objects.filter(following__user=self.request.user)
+
+    def get_serializer_class(self):
+        return serializers.FollowGetSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
