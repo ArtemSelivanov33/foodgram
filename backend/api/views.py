@@ -87,12 +87,12 @@ class UsersViewSet(BaseUserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        methods=['GET'],
-        url_path='subscriptions',
-        permission_classes=(permissions.IsAuthenticated,),
-        detail=False,
-    )
+    # @action(
+    #     methods=['GET'],
+    #     url_path='subscriptions',
+    #     permission_classes=(permissions.IsAuthenticated,),
+    #     detail=False,
+    # )
     # def subscriptions(self, request):
     #     following_users = self.get_following_users(request)
     #     serializer = self.get_following_users_serializer(
