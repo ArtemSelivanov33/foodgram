@@ -87,12 +87,12 @@ class UsersViewSet(BaseUserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # @action(
-    #     methods=['GET'],
-    #     url_path='subscriptions',
-    #     permission_classes=(permissions.IsAuthenticated,),
-    #     detail=False,
-    # )
+    @action(
+        methods=['GET'],
+        url_path='subscriptions',
+        permission_classes=(permissions.IsAuthenticated,),
+        detail=False,
+    )
     # def subscriptions(self, request):
     #     following_users = self.get_following_users(request)
     #     serializer = self.get_following_users_serializer(
@@ -114,7 +114,9 @@ class UsersViewSet(BaseUserViewSet):
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = self.get_serializer(
+                page, many=True, context={'request': request}
+            )
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
