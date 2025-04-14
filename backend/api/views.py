@@ -93,15 +93,21 @@ class UsersViewSet(BaseUserViewSet):
         permission_classes=(permissions.IsAuthenticated,),
         detail=False,
     )
+    # я не понял до конца,мне надо именно метод list() прописать?
+    # так его не получается в @action завернуть, как по другому, я не знаю.
     def subscriptions(self, request):
         queryset = self.filter_queryset(
             User.objects.filter(following__user=request.user)
         )
         pages = self.paginate_queryset(queryset)
-        serializer = serializers.FollowGetSerializer(
-            pages, many=True, context={'request': request}
-        )
-        return self.get_paginated_response(serializer.data)
+        if pages is not None:
+            serializer = serializers.FollowGetSerializer(
+                pages, many=True, context={'request': request}
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
