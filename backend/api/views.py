@@ -263,14 +263,3 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
     pagination_class = None
-
-
-def recipe_by_short_link(request, short_link):
-    recipe = get_object_or_404(
-        Recipe,
-        short_link=short_link
-    )
-    return redirect(
-        'api:recipe-detail',
-        pk=recipe.id
-    )
