@@ -93,43 +93,16 @@ class UsersViewSet(BaseUserViewSet):
         permission_classes=(permissions.IsAuthenticated,),
         detail=False,
     )
-    # def subscriptions(self, request):
-    #     following_users = self.get_following_users(request)
-    #     serializer = self.get_following_users_serializer(
-    #         following_users, request
-    #     )
-    #     return self.get_paginated_response(serializer.data)
-    # def get_following_users(self, request):
-    #     """Метод для получения queryset подписок пользователя."""
-    #     return User.objects.filter(following__user=request.user)
-    # def get_following_users_serializer(self, following_users, request):
-    #     """Метод для получения сериализатора."""
-    #     return serializers.FollowGetSerializer(
-    #         self.paginate_queryset(following_users),
-    #         context={'request': request},
-    #         many=True,
-    #     )
-    # def subscriptions(self, request):
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     page = self.paginate_queryset(queryset)
-    #     if page is not None:
-    #         serializer = self.get_serializer(
-    #             page, many=True, context={'request': request}
-    #         )
-    #         return self.get_paginated_response(serializer.data)
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
-    # def get_queryset(self):
-    #     return User.objects.filter(following__user=self.request.user)
-    # def get_serializer_class(self):
-    #     return serializers.FollowGetSerializer
     def subscriptions(self, request):
-        queryset = User.objects.filter(following__user=request.user)
+        queryset = self.filter_queryset(self.get_queryset())
         pages = self.paginate_queryset(queryset)
         serializer = serializers.FollowGetSerializer(
             pages, many=True, context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
+
+    def get_queryset(self):
+        return User.objects.filter(following__user=self.request.user)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
