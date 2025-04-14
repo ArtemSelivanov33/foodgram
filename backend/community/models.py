@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -17,6 +18,10 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    def clean(self):
+        if self.user == self.following:
+            raise ValidationError("Нельзя подписаться на самого себя.")
 
     class Meta:
         verbose_name = 'Подписка'
