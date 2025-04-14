@@ -95,6 +95,7 @@ class UsersViewSet(BaseUserViewSet):
     )
     # я не понял до конца,мне надо именно метод list() прописать?
     # так его не получается в @action завернуть, как по другому, я не знаю.
+    # у меня уже не остается времени, в среду последний день сдачи проекта.
     def subscriptions(self, request):
         queryset = self.filter_queryset(
             User.objects.filter(following__user=request.user)
